@@ -15,7 +15,7 @@
         .glass-panel { background: rgba(13, 17, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); transition: 0.3s ease; }
         .input-box { background: #161b22; border: 1px solid #30363d; transition: 0.3s ease; }
 
-        /* Gündüz Modu Stilleri */
+        /* Gündüz Modu */
         body.light-mode { background-color: #f0f4f8; color: #1a1a1a; }
         body.light-mode .glass-panel { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
         body.light-mode .input-box { background: #ffffff; border: 1px solid #d1d5db; color: #1a1a1a; }
@@ -26,11 +26,6 @@
         .rgb-bg { background: var(--rgb-gradient); background-size: 200% auto; animation: shine 3s linear infinite; }
         .rgb-border:focus-within { border-image: var(--rgb-gradient) 1; box-shadow: 0 0 15px rgba(47, 129, 247, 0.4); }
         @keyframes shine { to { background-position: 200% center; } }
-        
-        .mode-select { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; display: inline-flex; gap: 4px; margin-bottom: 20px; }
-        body.light-mode .mode-select { background: rgba(0,0,0,0.05); }
-        .mode-btn { padding: 6px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 13px; }
-        .active-mode { background: #2f81f7; color: white; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center px-4 text-center">
@@ -54,25 +49,15 @@
         </p>
 
         <div class="glass-panel w-full max-w-2xl mx-auto rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
-            <form method="POST" action="/" onsubmit="startLoading()" class="flex flex-col gap-5">
-                
-                <div class="flex justify-center">
-                    <div class="mode-select">
-                        <div id="m-video" class="mode-btn active-mode" onclick="setMode('video')">VİDEO (MP4)</div>
-                        <div id="m-mp3" class="mode-btn" onclick="setMode('mp3')">SES (MP3)</div>
-                        <input type="hidden" name="action" id="action-input" value="video">
-                    </div>
+            <form method="POST" action="/" onsubmit="startLoading()" class="flex flex-col md:flex-row gap-3">
+                <div class="input-box rounded-xl flex-grow flex items-center px-4 py-3 rgb-border">
+                    <i class="fa-solid fa-link text-gray-400 mr-3"></i>
+                    <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required class="bg-transparent w-full outline-none text-white font-medium">
                 </div>
-
-                <div class="flex flex-col md:flex-row gap-3">
-                    <div class="input-box rounded-xl flex-grow flex items-center px-4 py-3 rgb-border">
-                        <i class="fa-solid fa-link text-gray-400 mr-3"></i>
-                        <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required class="bg-transparent w-full outline-none text-white font-medium">
-                    </div>
-                    <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white rounded-xl hover:scale-105 transition-all shadow-lg">
-                        İNDİR
-                    </button>
-                </div>
+                <input type="hidden" name="action" value="video">
+                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white rounded-xl hover:scale-105 transition-all shadow-lg">
+                    İNDİR
+                </button>
             </form>
             
             {% if error %}
@@ -81,14 +66,14 @@
         </div>
         
         <div id="loader" class="hidden mt-10 w-full max-w-md mx-auto">
-            <div class="w-full bg-white/5 dark:bg-black/20 h-1.5 rounded-full overflow-hidden">
+            <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
                 <div id="bar" class="rgb-bg h-full w-0 transition-all duration-300"></div>
             </div>
-            <p class="mt-4 text-[10px] rgb-text font-bold tracking-widest uppercase animate-pulse">Medya hazırlanıyor, Sakarya'dan sevgilerle...</p>
+            <p class="mt-4 text-[10px] rgb-text font-bold tracking-widest uppercase animate-pulse">Medya yola çıktı, geliyor...</p>
         </div>
         
         <div class="mt-8 text-xs text-gray-500 italic">
-            Not: Büyük videolarda indirme butonuna bastıktan sonra işlemin bitmesi biraz sürebilir.
+            Not: İndirme butonuna bastıktan sonra işlemin bitmesi 5-10 saniye sürebilir.
         </div>
     </main>
 
@@ -97,31 +82,20 @@
     </footer>
 
     <script>
-        // Tema Değiştirme Mantığı
         const themeBtn = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
         
         themeBtn.onclick = () => {
             document.body.classList.toggle('light-mode');
             if(document.body.classList.contains('light-mode')) {
-                // Gündüz modu aktif: Geceye geçmek için Hilal göster
                 themeIcon.classList.replace('fa-sun', 'fa-moon');
                 themeIcon.classList.replace('text-orange-500', 'text-blue-500');
             } else {
-                // Gece modu aktif: Gündüze geçmek için Güneş göster
                 themeIcon.classList.replace('fa-moon', 'fa-sun');
                 themeIcon.classList.replace('text-blue-500', 'text-orange-500');
             }
         };
 
-        // Format Seçimi (MP4 / MP3)
-        function setMode(mode) {
-            document.getElementById('action-input').value = mode;
-            document.getElementById('m-video').classList.toggle('active-mode', mode === 'video');
-            document.getElementById('m-mp3').classList.toggle('active-mode', mode === 'mp3');
-        }
-
-        // Loading Bar Başlatma
         function startLoading() {
             const loader = document.getElementById('loader');
             const bar = document.getElementById('bar');
@@ -133,7 +107,6 @@
                 if(w > 94) clearInterval(iv);
             }, 600);
             
-            // İndirme başlayınca (sayfa odağı değişince) loader'ı sıfırla
             window.onfocus = () => {
                 setTimeout(() => {
                     loader.classList.add('hidden');

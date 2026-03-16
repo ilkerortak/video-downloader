@@ -1,62 +1,79 @@
-from flask import Flask, render_template, request, redirect, url_for, session
 import yt_dlp
-import os
+from flask import Flask, render_template, request, send_file, Response
 import requests
+from io import BytesIO
+import urllib.parse
 
 app = Flask(__name__)
-app.secret_key = 'ilker_sakarya_54_final'
+
+# Video bilgilerini çeken ana fonksiyon
+def get_video_data(url):
+    # yt-dlp ayarları: En iyi kaliteyi bul ama indirme, sadece bilgi getir
+    ydl_opts = {
+        'format': 'best',
+        'quiet': True,
+        'no_warnings': True,
+        'extract_flat': False,
+    }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(url, download=False)
+        
+        # Bazı platformlarda doğrudan URL gelmeyebilir, formatları kontrol et
+        video_url = info.get('url')
+        if not video_url and 'formats' in info:
+            video_url = info['formats'][-1].get('url')
+
+        return {
+            'url': video_url,
+            'title': info.get('title', 'Video'),
+            'thumb': info.get('thumbnail'),
+            'platform': info.get('extractor_key', 'Video')
+        }
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    video_info = None
+    error_message = None
     if request.method == 'POST':
         url = request.form.get('url')
-        
-        if not url:
-            session['error_message'] = "Lütfen bir link girin."
-        else:
-            # TIKTOK ÖZEL ÇÖZÜM
-            if "tiktok.com" in url:
-                try:
-                    api_url = f"https://www.tikwm.com/api/?url={url}"
-                    response = requests.get(api_url).json()
-                    if response.get('code') == 0:
-                        data = response.get('data')
-                        session['video_info'] = {
-                            'title': data.get('title', 'TikTok Videosu'),
-                            'url': data.get('play'), # Filigransız video
-                        }
-                        session.pop('error_message', None)
-                    else:
-                        session['error_message'] = "TikTok videosu alınamadı."
-                except:
-                    session['error_message'] = "Servis şu an meşgul."
-            
-            # DİĞER PLATFORMLAR
-            else:
-                try:
-                    ydl_opts = {
-                        'quiet': True,
-                        'format': 'best',
-                        'noplaylist': True,
-                        'nocheckcertificate': True,
-                    }
-                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                        info = ydl.extract_info(url, download=False)
-                        if info:
-                            session['video_info'] = {
-                                'title': info.get('title', 'Video Hazır'),
-                                'url': info.get('url'),
-                            }
-                            session.pop('error_message', None)
-                except:
-                    session['error_message'] = "Video bilgileri alınamadı."
-
-        return redirect(url_for('index'))
-
-    video_info = session.pop('video_info', None)
-    error_message = session.pop('error_message', None)
+        if url:
+            try:
+                video_info = get_video_data(url)
+            except Exception as e:
+                print(f"Hata: {e}")
+                error_message = "Video bulunamadı veya bu platform henüz desteklenmiyor."
+    
     return render_template('index.html', video_info=video_info, error_message=error_message)
 
+# TELEFONA DİREK İNDİRMEYİ SAĞLAYAN KÖPRÜ (PROXY)
+@app.route('/proxy_download')
+def proxy_download():
+    video_url = request.args.get('url')
+    video_title = request.args.get('title', 'video')
+    
+    if not video_url:
+        return "Geçersiz URL", 400
+
+    try:
+        # Videoyu sunucu üzerinden çekiyoruz
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        r = requests.get(video_url, headers=headers, stream=True, timeout=10)
+        
+        # Tarayıcıya indirme komutu gönderen Response yapısı
+        return Response(
+            r.content,
+            mimetype="video/mp4",
+            headers={
+                "Content-Disposition": f"attachment; filename={urllib.parse.quote(video_title)}.mp4"
+            }
+        )
+    except Exception as e:
+        return f"İndirme sırasında bir hata oluştu: {str(e)}", 500
+
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 8080))
+    # Railway veya Yerel çalışma ayarı
+    import os
+    port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)

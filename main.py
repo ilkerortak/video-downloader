@@ -5,56 +5,100 @@ import os
 
 app = Flask(__name__)
 
+# --- VİDEO ÇEKME MOTORLARI ---
+
 def fetch_video(url):
-    # LİSTE: Denenecek API servisleri
-    # Birinci patlarsa ikinciye, o da patlarsa üçüncüye geçer.
-    
-    # 1. Deneme: TikWM (TikTok için zaten iyi)
-    if "tiktok" in url:
+    """
+    Farklı platformlar için en uygun API köprüsünü seçer.
+    """
+    # 1. TIKTOK İÇİN ÖZEL MOTOR (TikWM)
+    if "tiktok.com" in url:
         try:
-            r = requests.get(f"https://www.tikwm.com/api/?url={url}", timeout=8).json()
+            r = requests.get(f"https://www.tikwm.com/api/?url={url}", timeout=10).json()
             if r.get('code') == 0:
-                return {'url': r['data']['play'], 'title': r['data'].get('title', 'TikTok'), 'thumb': r['data'].get('cover')}
+                d = r['data']
+                return {
+                    'url': d['play'], 
+                    'title': d.get('title', 'TikTok Videosu'), 
+                    'thumb': d.get('cover'),
+                    'platform': 'TikTok'
+                }
         except: pass
 
-    # 2. Deneme: VKR Downloader (Genel servis)
+    # 2. INSTAGRAM, YOUTUBE VE DİĞERLERİ (VKR & Genel Motor)
     try:
-        r = requests.get(f"https://api.vkrdownloader.com/server?vkr={url}", timeout=8).json()
+        # Bu API sunucunun IP engelini aşmak için aracı olur
+        api_url = f"https://api.vkrdownloader.com/server?vkr={url}"
+        r = requests.get(api_url, timeout=12).json()
+        
         if r.get('data'):
             d = r['data']
+            # Link bazen liste bazen string dönebilir, kontrol edelim
             v_url = d['url'][0] if isinstance(d['url'], list) else d['url']
-            return {'url': v_url, 'title': d.get('title', 'Video'), 'thumb': d.get('thumbnail', '')}
+            
+            # YouTube bazen çok fazla format döner, MP4 olanı bulmaya çalışalım
+            return {
+                'url': v_url, 
+                'title': d.get('title', 'Sosyal Medya Videosu'), 
+                'thumb': d.get('thumbnail', ''),
+                'platform': 'Sosyal Medya'
+            }
     except: pass
 
-    # 3. Deneme: Alternatif bir açık kaynak API (Örnek: Cobalt benzeri yapılar)
-    # Buraya başka API uçları eklenebilir.
-    
     return None
+
+# --- ROUTER (SAYFA YÖNETİMİ) ---
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     video_info = None
     error_message = None
+    
+    # Sadece 'İndir' butonuna basıldığında işlem yap
     if request.method == 'POST':
         url = request.form.get('url', '').strip()
-        if url:
+        
+        if not url:
+            error_message = "Lütfen bir video bağlantısı yapıştırın."
+        else:
+            # Videoyu çekmeye çalış
             video_info = fetch_video(url)
+            
+            # Eğer link var ama video bulunamadıysa hatayı şimdi göster
             if not video_info:
-                # İşte senin gördüğün o hata burada tetikleniyor
-                error_message = "Video bağlantısı şu an çözülemedi. Platform servisleri yoğun olabilir."
+                error_message = "Video bağlantısı şu an çözülemedi. Linkin gizli olmadığından emin olun."
     
+    # Sayfa ilk açıldığında (GET) error_message ve video_info None olduğu için hata görünmez.
     return render_template('index.html', video_info=video_info, error_message=error_message)
+
+# --- İNDİRME KÖPRÜSÜ (PROXY) ---
 
 @app.route('/proxy_download')
 def proxy_download():
     video_url = request.args.get('url')
-    video_title = request.args.get('title', 'video')
+    video_title = request.args.get('title', 'hemenindir_video')
+    
+    if not video_url:
+        return "Geçersiz istek.", 400
+
     try:
-        r = requests.get(video_url, stream=True, timeout=20)
-        return Response(r.iter_content(chunk_size=1024*1024),
-                        mimetype="video/mp4",
-                        headers={"Content-Disposition": f"attachment; filename={urllib.parse.quote(video_title)}.mp4"})
-    except: return "Hata!", 500
+        # İndirme sırasında platformu kandırmak için gerçekçi bir kimlik
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+        }
+        r = requests.get(video_url, headers=headers, stream=True, timeout=30)
+        
+        return Response(
+            r.iter_content(chunk_size=1024*1024),
+            mimetype="video/mp4",
+            headers={
+                "Content-Disposition": f"attachment; filename={urllib.parse.quote(video_title)}.mp4"
+            }
+        )
+    except:
+        return "Dosya sunucudan çekilemedi.", 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 8080)))
+    # Railway veya Yerel Port ayarı
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)

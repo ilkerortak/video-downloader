@@ -14,9 +14,8 @@
         .rgb-bg { background: var(--rgb-gradient); background-size: 200% auto; animation: shine 3s linear infinite; }
         .rgb-border:focus-within { border-image: var(--rgb-gradient) 1; box-shadow: 0 0 15px rgba(47, 129, 247, 0.4); }
         @keyframes shine { to { background-position: 200% center; } }
-        .glass-panel { background: rgba(13, 17, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); }
-        .input-area { background: #161b22; border: 1px solid #30363d; border-radius: 0.75rem; transition: 0.3s; }
         .description-text { color: #d1d5db; }
+        .glass-panel { background: rgba(13, 17, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center px-4">
@@ -36,70 +35,28 @@
 
         <div class="glass-panel w-full max-w-2xl rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
             <form method="POST" action="/" class="flex flex-col md:flex-row gap-3">
-                <div class="input-area flex-grow flex items-center px-4 py-3 rgb-border">
+                <div class="bg-[#161b22] border border-[#30363d] rounded-xl flex-grow flex items-center px-4 py-3 rgb-border">
                     <i class="fa-solid fa-link text-gray-400 mr-3"></i>
-                    <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required
-                        class="bg-transparent w-full outline-none text-white text-base">
+                    <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required class="bg-transparent w-full outline-none text-white">
                 </div>
-                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white flex items-center justify-center gap-2 rounded-xl">
-                    <i class="fa-solid fa-bolt"></i> İndir
-                </button>
+                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white rounded-xl hover:scale-105 transition-all">İndir</button>
             </form>
         </div>
 
         {% if video_info %}
-        <div class="glass-panel w-full max-w-2xl mt-8 rounded-2xl p-8 border border-blue-500/20 text-center">
-            <div id="loader-box">
-                <i class="fas fa-spinner fa-spin text-4xl rgb-text"></i>
-                <p class="mt-4 text-gray-400">Medya çözülüyor, az kaldı...</p>
-            </div>
-            
-            <div id="result-box" class="hidden">
-                <span class="text-[10px] font-black uppercase tracking-widest rgb-text border border-blue-500/20 px-2 py-1 rounded">VİDEO HAZIR</span>
-                <h2 class="text-2xl font-bold mt-4 mb-6 italic">Başarıyla Hazırlandı!</h2>
-                <a id="download-link" href="#" target="_blank" class="rgb-bg inline-block px-14 py-4 font-extrabold text-md rounded-xl shadow-lg shadow-blue-500/30">
-                   VİDEOYU KAYDET
+        <div class="glass-panel w-full max-w-2xl mt-8 rounded-2xl p-10 border border-blue-500/20 text-center">
+            {% if video_info.error %}
+                <i class="fas fa-triangle-exclamation text-red-500 text-4xl mb-4"></i>
+                <p class="text-red-400">Bu video geçici olarak korunuyor. Lütfen başka bir link deneyin.</p>
+            {% else %}
+                <span class="text-[10px] font-black uppercase tracking-widest rgb-text border border-blue-500/20 px-2 py-1 rounded">VİDEO ÇÖZÜLDÜ</span>
+                <h2 class="text-2xl font-bold mt-4 mb-8 italic text-gray-200">İndirme İşlemi Hazır!</h2>
+                <a href="/download_tunnel?url={{ video_info.url | urlencode }}" 
+                   class="rgb-bg inline-block px-16 py-5 font-extrabold text-lg rounded-xl shadow-lg shadow-blue-500/30 hover:scale-105 transition-all">
+                   <i class="fa-solid fa-cloud-arrow-down mr-2"></i> CİHAZA KAYDET
                 </a>
-            </div>
+            {% endif %}
         </div>
-
-        <script>
-            async function getMedia() {
-                const target = "{{ video_info.target_url }}";
-                
-                // YouTube ve Instagram'ı aynı anda vuran çoklu motor
-                const apis = [
-                    'https://api.cobalt.tools/api/json',
-                    'https://cobalt-api.mrcyjanek.net/api/json' // Yedek motor
-                ];
-
-                for (let api of apis) {
-                    try {
-                        const response = await fetch(api, {
-                            method: 'POST',
-                            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ url: target, vQuality: "720", isAudioOnly: false })
-                        });
-                        const data = await response.json();
-                        if (data.url) {
-                            showResult(data.url);
-                            return;
-                        }
-                    } catch (e) { continue; }
-                }
-
-                // Her şey başarısız olursa
-                document.getElementById('loader-box').innerHTML = "<p class='text-red-500'>Bu video şu an korunuyor. Lütfen başka bir link deneyin.</p>";
-            }
-
-            function showResult(url) {
-                document.getElementById('loader-box').classList.add('hidden');
-                document.getElementById('result-box').classList.remove('hidden');
-                document.getElementById('download-link').href = url;
-            }
-
-            window.onload = getMedia;
-        </script>
         {% endif %}
     </main>
 

@@ -14,50 +14,43 @@
         .rgb-bg { background: var(--rgb-gradient); background-size: 200% auto; animation: shine 3s linear infinite; }
         .rgb-border:focus-within { border-image: var(--rgb-gradient) 1; box-shadow: 0 0 15px rgba(47, 129, 247, 0.4); }
         @keyframes shine { to { background-position: 200% center; } }
-        .description-text { color: #d1d5db; }
         .glass-panel { background: rgba(13, 17, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center px-4">
+<body class="min-h-screen flex flex-col items-center justify-center px-4 text-center">
 
     <div class="absolute top-8 left-8 flex items-center gap-2">
         <div class="w-9 h-9 rounded-lg rgb-bg flex items-center justify-center font-bold text-white text-sm">Hİ</div>
         <span class="text-lg font-bold tracking-tight uppercase">HEMENİNDİR<span class="rgb-text">.io</span></span>
     </div>
 
-    <main class="w-full max-w-4xl flex flex-col items-center">
-        <h1 class="text-5xl md:text-7xl font-extrabold text-center mb-4 tracking-tight">
+    <main class="w-full max-w-4xl">
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-4 tracking-tight">
             Her Şeyi <span class="rgb-text">Anında</span> İndir.
         </h1>
-        <p class="description-text text-center mb-12 text-lg max-w-2xl font-light">
-            Tiktok ınstagram ve youtube ... linkini yapıştır filigransız ve en yüksek kalitede saniyeler içinde cihazına kaydet.
+        <p class="text-gray-400 text-lg mb-12 font-light">
+            TikTok, Instagram ve YouTube linkini yapıştır, saniyeler içinde cihazına gelsin.
         </p>
 
-        <div class="glass-panel w-full max-w-2xl rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
+        <div class="glass-panel w-full max-w-2xl mx-auto rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
             <form method="POST" action="/" class="flex flex-col md:flex-row gap-3">
                 <div class="bg-[#161b22] border border-[#30363d] rounded-xl flex-grow flex items-center px-4 py-3 rgb-border">
                     <i class="fa-solid fa-link text-gray-400 mr-3"></i>
                     <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required class="bg-transparent w-full outline-none text-white">
                 </div>
-                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white rounded-xl hover:scale-105 transition-all">İndir</button>
+                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white rounded-xl hover:scale-105 transition-all">
+                    İndir
+                </button>
             </form>
-        </div>
-
-        {% if video_info %}
-        <div class="glass-panel w-full max-w-2xl mt-8 rounded-2xl p-10 border border-blue-500/20 text-center">
-            {% if video_info.error %}
-                <i class="fas fa-triangle-exclamation text-red-500 text-4xl mb-4"></i>
-                <p class="text-red-400">Bu video geçici olarak korunuyor. Lütfen başka bir link deneyin.</p>
-            {% else %}
-                <span class="text-[10px] font-black uppercase tracking-widest rgb-text border border-blue-500/20 px-2 py-1 rounded">VİDEO ÇÖZÜLDÜ</span>
-                <h2 class="text-2xl font-bold mt-4 mb-8 italic text-gray-200">İndirme İşlemi Hazır!</h2>
-                <a href="/download_tunnel?url={{ video_info.url | urlencode }}" 
-                   class="rgb-bg inline-block px-16 py-5 font-extrabold text-lg rounded-xl shadow-lg shadow-blue-500/30 hover:scale-105 transition-all">
-                   <i class="fa-solid fa-cloud-arrow-down mr-2"></i> CİHAZA KAYDET
-                </a>
+            
+            {% if error %}
+            <p class="mt-4 text-red-500 text-sm font-semibold">{{ error }}</p>
             {% endif %}
         </div>
-        {% endif %}
+        
+        <div class="mt-8 text-xs text-gray-500 italic">
+            Not: Büyük videolarda indirme butonuna bastıktan sonra işlemin bitmesi 5-10 saniye sürebilir.
+        </div>
     </main>
 
     <footer class="mt-20 text-gray-600 text-[10px] font-bold uppercase tracking-[0.3em]">

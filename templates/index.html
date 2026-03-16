@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hemenİndir.io | Profesyonel Video İndirici</title>
     
+    <script src="https://quge5.com/88/tag.min.js" data-zone="220292" async data-cfasync="false"></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -68,7 +70,7 @@
                 Her Şeyi <span class="text-blue-500 italic">Anında</span> İndir.
             </h2>
             <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
-                TikTok, Instagram ve YouTube videolarını en yüksek kalitede, reklamlara boğulmadan cihazına kaydet.
+                TikTok, Instagram ve YouTube videolarını en yüksek kalitede cihazına kaydet.
             </p>
         </div>
 
@@ -84,69 +86,4 @@
                 <form method="POST" id="downloadForm" class="flex flex-col md:flex-row gap-4">
                     <input type="text" name="url" placeholder="Video linkini buraya yapıştır..." id="urlInput"
                         class="flex-grow px-8 py-5 bg-white/5 border-2 border-white/10 rounded-3xl focus:outline-none input-glow transition-all text-lg dark:text-white">
-                    <button type="submit" id="submitBtn" class="btn-gradient px-12 py-5 rounded-3xl font-bold text-white text-lg transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center min-w-[180px]">
-                        <span id="btnText">Hemen İndir</span>
-                        <div id="loaderIcon" class="hidden animate-spin rounded-full border-2 border-t-transparent border-white h-5 w-5 ml-3"></div>
-                    </button>
-                </form>
-
-                {% if video_info %}
-                <div class="mt-12 animate-up">
-                    <div class="relative group rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl bg-black">
-                        <img src="{{ video_info.thumb }}" class="w-full h-[400px] object-cover opacity-60 group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#000d1a] via-transparent to-transparent flex flex-col justify-end p-8 md:p-12">
-                            <span class="text-blue-400 font-bold text-sm mb-2">● {{ video_info.platform }}</span>
-                            <h3 class="text-2xl md:text-3xl font-bold mb-6 line-clamp-2">{{ video_info.title }}</h3>
-                            <a href="{{ video_info.url }}" download="hemenindir_video.mp4" target="_blank"
-                                class="w-full md:w-max bg-white text-[#000d1a] font-black py-5 px-12 rounded-2xl hover:bg-blue-500 hover:text-white transition-all text-center text-lg shadow-xl">
-                                GALERİYE KAYDET
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        {% if history %}
-        <div class="mt-20 animate-up" style="animation-delay: 0.4s;">
-            <div class="flex items-center gap-4 mb-8">
-                <div class="h-px bg-white/10 flex-grow"></div>
-                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-[0.3em]">Son İşlemlerin</h4>
-                <div class="h-px bg-white/10 flex-grow"></div>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                {% for item in history %}
-                <a href="{{ item.url }}" target="_blank" class="group relative rounded-2xl overflow-hidden border border-white/5 bg-white/5 hover:border-blue-500/50 transition-all">
-                    <img src="{{ item.thumb }}" class="w-full h-32 object-cover opacity-50 group-hover:opacity-100 transition-all">
-                    <div class="absolute inset-0 flex items-end p-2 bg-gradient-to-t from-black/80 to-transparent">
-                        <p class="text-[9px] font-bold truncate">{{ item.title }}</p>
-                    </div>
-                </a>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-    </main>
-
-    <footer class="p-10 text-center border-t border-white/5 mt-10">
-        <p class="text-gray-600 text-[11px] font-bold tracking-widest uppercase">
-            &copy; 2026 HEMENİNDİR.IO &bull; SAKARYA, TÜRKİYE
-        </p>
-    </footer>
-
-    <script>
-        function toggleMode() {
-            const body = document.getElementById('mainBody');
-            body.classList.toggle('dark-mode');
-            body.classList.toggle('light-mode');
-        }
-
-        document.getElementById('downloadForm').onsubmit = function() {
-            document.getElementById('btnText').innerText = "Hazırlanıyor...";
-            document.getElementById('loaderIcon').classList.remove('hidden');
-        };
-    </script>
-</body>
-</html>
+                    <button type="submit" id="submitBtn" class="btn-gradient px-12

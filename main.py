@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import yt_dlp
 import os
-import requests # Artık hata vermeyecek
 
 app = Flask(__name__)
 app.secret_key = 'ilker_sakarya_54'
@@ -15,18 +14,25 @@ def index():
             session['error_message'] = "Lütfen bir link girin."
         else:
             try:
-                # Proxy ayarı - Eğer çalışmazsa burayı boş bırakabiliriz
-                # proxy_url = "http://ip:port" 
-                
                 ydl_opts = {
                     'quiet': True,
                     'no_warnings': True,
                     'format': 'best',
                     'noplaylist': True,
-                    # 'proxy': proxy_url, # Proxy denemek istersen bu satırı aktif et
+                    'nocheckcertificate': True,
+                    'geo_bypass': True,
                     'cookiefile': 'cookies.txt' if os.path.exists('cookies.txt') else None,
+                    # TikTok'un WAF (Güvenlik Duvarı) sistemini geçmeye yönelik ayarlar
+                    'extractor_args': {
+                        'tiktok': {
+                            'app_version': '33.1.4',
+                            'manifest_app_version': '33.1.4',
+                        }
+                    },
                     'http_headers': {
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                        'Accept': '*/*',
+                        'Accept-Language': 'en-US,en;q=0.9',
                     },
                 }
                 
@@ -40,7 +46,10 @@ def index():
                         session.pop('error_message', None)
             except Exception as e:
                 print(f"Hata: {e}")
-                session['error_message'] = "TikTok erişimi hala kısıtlı. Çerezleri veya Proxy'yi kontrol edin."
+                if "403" in str(e):
+                    session['error_message'] = "TikTok sunucu IP'mizi engelledi. Başka bir video deneyin veya biraz bekleyin."
+                else:
+                    session['error_message'] = "Bağlantı analiz edilemedi."
                 session.pop('video_info', None)
         
         return redirect(url_for('index'))

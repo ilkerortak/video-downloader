@@ -1,10 +1,5 @@
 <!DOCTYPE html>
 <html lang="tr">
-{% if error_message %}
-    <div class="bg-red-100 text-red-700 p-4 rounded-xl mb-4 text-sm">
-        {{ error_message }}
-    </div>
-{% endif %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,6 +24,14 @@
         </div>
 
         <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+            
+            {% if error_message %}
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg mb-6 shadow-sm">
+                <p class="font-bold">Hata!</p>
+                <p>{{ error_message }}</p>
+            </div>
+            {% endif %}
+
             <form method="POST" class="space-y-4">
                 <div class="relative">
                     <input 
@@ -52,4 +55,28 @@
                 <div class="flex flex-col items-center text-center">
                     <div class="bg-indigo-100 p-4 rounded-full mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ video_info.title }}</h3>
+                    <a 
+                        href="{{ video_info.url }}" 
+                        target="_blank" 
+                        class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full transition-colors shadow-md"
+                        download
+                    >
+                        Hemen İndir
+                    </a>
+                    <p class="mt-3 text-xs text-gray-400 italic font-medium">Not: İndirme başlamazsa sağ tıklayıp "Bağlantıyı farklı kaydet" deyin.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer class="bg-white py-6 text-center text-gray-400 text-sm border-t border-gray-100">
+        &copy; 2026 SaveFast - Tüm hakları saklıdır.
+    </footer>
+
+</body>
+</html>

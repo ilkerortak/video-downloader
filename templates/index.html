@@ -9,19 +9,40 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --rgb-gradient: linear-gradient(90deg, #2f81f7, #00d2ff, #2f81f7); }
-        body { font-family: 'Outfit', sans-serif; background-color: #05070a; color: #ffffff; }
+        
+        /* Varsayılan: Gece Modu */
+        body { font-family: 'Outfit', sans-serif; background-color: #05070a; color: #ffffff; transition: 0.3s ease; }
+        .glass-panel { background: rgba(13, 17, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); transition: 0.3s ease; }
+        .input-box { background: #161b22; border: 1px solid #30363d; transition: 0.3s ease; }
+
+        /* Gündüz Modu Stilleri */
+        body.light-mode { background-color: #f0f4f8; color: #1a1a1a; }
+        body.light-mode .glass-panel { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
+        body.light-mode .input-box { background: #ffffff; border: 1px solid #d1d5db; color: #1a1a1a; }
+        body.light-mode input { color: #1a1a1a; }
+        body.light-mode .text-gray-400 { color: #4b5563; }
+
         .rgb-text { background: var(--rgb-gradient); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
         .rgb-bg { background: var(--rgb-gradient); background-size: 200% auto; animation: shine 3s linear infinite; }
         .rgb-border:focus-within { border-image: var(--rgb-gradient) 1; box-shadow: 0 0 15px rgba(47, 129, 247, 0.4); }
         @keyframes shine { to { background-position: 200% center; } }
-        .glass-panel { background: rgba(13, 17, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); }
+        
+        .mode-select { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; display: inline-flex; gap: 4px; margin-bottom: 20px; }
+        body.light-mode .mode-select { background: rgba(0,0,0,0.05); }
+        .mode-btn { padding: 6px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 13px; }
+        .active-mode { background: #2f81f7; color: white; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center px-4 text-center">
 
-    <div class="absolute top-8 left-8 flex items-center gap-2">
-        <div class="w-9 h-9 rounded-lg rgb-bg flex items-center justify-center font-bold text-white text-sm">Hİ</div>
-        <span class="text-lg font-bold tracking-tight uppercase">HEMENİNDİR<span class="rgb-text">.io</span></span>
+    <div class="absolute top-8 left-8 right-8 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-lg rgb-bg flex items-center justify-center font-bold text-white text-sm">Hİ</div>
+            <span class="text-lg font-bold tracking-tight uppercase">HEMENİNDİR<span class="rgb-text">.io</span></span>
+        </div>
+        <button id="theme-toggle" class="text-xl hover:scale-110 transition-transform">
+            <i class="fa-solid fa-sun text-orange-500" id="theme-icon"></i>
+        </button>
     </div>
 
     <main class="w-full max-w-4xl">
@@ -33,14 +54,25 @@
         </p>
 
         <div class="glass-panel w-full max-w-2xl mx-auto rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
-            <form method="POST" action="/" class="flex flex-col md:flex-row gap-3">
-                <div class="bg-[#161b22] border border-[#30363d] rounded-xl flex-grow flex items-center px-4 py-3 rgb-border">
-                    <i class="fa-solid fa-link text-gray-400 mr-3"></i>
-                    <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required class="bg-transparent w-full outline-none text-white">
+            <form method="POST" action="/" onsubmit="startLoading()" class="flex flex-col gap-5">
+                
+                <div class="flex justify-center">
+                    <div class="mode-select">
+                        <div id="m-video" class="mode-btn active-mode" onclick="setMode('video')">VİDEO (MP4)</div>
+                        <div id="m-mp3" class="mode-btn" onclick="setMode('mp3')">SES (MP3)</div>
+                        <input type="hidden" name="action" id="action-input" value="video">
+                    </div>
                 </div>
-                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white rounded-xl hover:scale-105 transition-all">
-                    İndir
-                </button>
+
+                <div class="flex flex-col md:flex-row gap-3">
+                    <div class="input-box rounded-xl flex-grow flex items-center px-4 py-3 rgb-border">
+                        <i class="fa-solid fa-link text-gray-400 mr-3"></i>
+                        <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required class="bg-transparent w-full outline-none text-white font-medium">
+                    </div>
+                    <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white rounded-xl hover:scale-105 transition-all shadow-lg">
+                        İNDİR
+                    </button>
+                </div>
             </form>
             
             {% if error %}
@@ -48,13 +80,67 @@
             {% endif %}
         </div>
         
+        <div id="loader" class="hidden mt-10 w-full max-w-md mx-auto">
+            <div class="w-full bg-white/5 dark:bg-black/20 h-1.5 rounded-full overflow-hidden">
+                <div id="bar" class="rgb-bg h-full w-0 transition-all duration-300"></div>
+            </div>
+            <p class="mt-4 text-[10px] rgb-text font-bold tracking-widest uppercase animate-pulse">Medya hazırlanıyor, Sakarya'dan sevgilerle...</p>
+        </div>
+        
         <div class="mt-8 text-xs text-gray-500 italic">
-            Not: Büyük videolarda indirme butonuna bastıktan sonra işlemin bitmesi 5-10 saniye sürebilir.
+            Not: Büyük videolarda indirme butonuna bastıktan sonra işlemin bitmesi biraz sürebilir.
         </div>
     </main>
 
     <footer class="mt-20 text-gray-600 text-[10px] font-bold uppercase tracking-[0.3em]">
         &copy; 2026 Hemenİndir.io — <span class="rgb-text">İlker Ortak</span>
     </footer>
+
+    <script>
+        // Tema Değiştirme Mantığı
+        const themeBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        
+        themeBtn.onclick = () => {
+            document.body.classList.toggle('light-mode');
+            if(document.body.classList.contains('light-mode')) {
+                // Gündüz modu aktif: Geceye geçmek için Hilal göster
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                themeIcon.classList.replace('text-orange-500', 'text-blue-500');
+            } else {
+                // Gece modu aktif: Gündüze geçmek için Güneş göster
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                themeIcon.classList.replace('text-blue-500', 'text-orange-500');
+            }
+        };
+
+        // Format Seçimi (MP4 / MP3)
+        function setMode(mode) {
+            document.getElementById('action-input').value = mode;
+            document.getElementById('m-video').classList.toggle('active-mode', mode === 'video');
+            document.getElementById('m-mp3').classList.toggle('active-mode', mode === 'mp3');
+        }
+
+        // Loading Bar Başlatma
+        function startLoading() {
+            const loader = document.getElementById('loader');
+            const bar = document.getElementById('bar');
+            loader.classList.remove('hidden');
+            let w = 0;
+            const iv = setInterval(() => {
+                w += (95 - w) * 0.1;
+                bar.style.width = w + '%';
+                if(w > 94) clearInterval(iv);
+            }, 600);
+            
+            // İndirme başlayınca (sayfa odağı değişince) loader'ı sıfırla
+            window.onfocus = () => {
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                    bar.style.width = '0%';
+                }, 1000);
+            };
+        }
+    </script>
 </body>
 </html>

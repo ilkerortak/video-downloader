@@ -19,7 +19,7 @@
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 2.5rem;
+            border-radius: 2rem;
         }
         
         .light-mode .glass-card {
@@ -27,31 +27,65 @@
             border: 1px solid rgba(0, 26, 51, 0.1);
         }
 
-        .input-glow:focus {
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-            border-color: #3b82f6;
-        }
-
         .btn-gradient {
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+        }
+
+        .input-style {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .animate-up {
+            animation: slideUp 0.6s ease-out forwards;
         }
 
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-up { animation: slideUp 0.6s ease-out forwards; }
     </style>
 </head>
 <body id="mainBody" class="min-h-screen flex flex-col dark-mode">
 
-    <nav class="max-w-6xl mx-auto w-full p-6 flex justify-between items-center">
+    <nav class="w-full p-6 flex justify-between items-center max-w-6xl mx-auto">
         <div class="flex items-center gap-3">
-            <div class="w-12 h-12 btn-gradient rounded-2xl flex items-center justify-center font-extrabold text-white text-xl shadow-lg">Hİ</div>
+            <div class="w-10 h-10 btn-gradient rounded-xl flex items-center justify-center font-black text-white shadow-lg">Hİ</div>
             <div>
-                <h1 class="text-2xl font-black tracking-tighter leading-none">HEMENİNDİR<span class="text-blue-500">.io</span></h1>
-                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Hızlı & Güvenli</span>
+                <h1 class="text-xl font-black tracking-tighter leading-none uppercase">HEMENİNDİR<span class="text-blue-500">.io</span></h1>
+                <p class="text-[9px] font-bold text-blue-400 uppercase tracking-widest mt-1">Hızlı & Güvenli</p>
             </div>
         </div>
-        <button onclick="toggleMode()" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10
+        <button onclick="toggleMode()" class="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+            🌓
+        </button>
+    </nav>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
+        
+        <div class="mb-12 flex justify-center min-h-[90px] bg-white/5 rounded-2xl items-center border border-dashed border-white/10">
+            <p class="text-[10px] text-gray-600 font-bold uppercase tracking-[0.3em]">Sponsorlu Reklam</p>
+        </div>
+
+        <div class="text-center space-y-4 mb-10 animate-up">
+            <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight">Her Şeyi <span class="text-blue-500 italic">Anında</span> İndir.</h2>
+            <p class="text-gray-400 text-sm md:text-lg max-w-xl mx-auto">TikTok, Instagram ve YouTube videolarını en yüksek kalitede, filigransız cihazına kaydet.</p>
+        </div>
+
+        <div class="glass-card p-6 md:p-10 shadow-2xl animate-up" style="animation-delay: 0.1s;">
+            
+            {% if error_message %}
+            <div class="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm text-center">
+                {{ error_message }}
+            </div>
+            {% endif %}
+
+            <form method="POST" id="downloadForm" class="flex flex-col md:flex-row gap-4">
+                <input type="text" name="url" placeholder="Video linkini buraya yapıştır..." 
+                    class="flex-grow px-6 py-5 input-style rounded-2xl focus:outline-none focus:border-blue-500 transition-all text-white text-lg">
+                
+                <button type="submit" id="submitBtn" 
+                    class="btn-gradient px-10 py-5 rounded-2xl font-bold text-white text-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center min-w-[180px]">
+                    <span id="btnText">Hemen İndir</span>
+                    <div id="loaderIcon" class="hidden animate

@@ -16,30 +16,19 @@ def index():
             error_message = "Lütfen geçerli bir video bağlantısı girin."
         else:
             try:
-                # TikTok ve diğer platformlar için en güncel ve güçlü ayarlar
                 ydl_opts = {
                     'quiet': True,
                     'no_warnings': True,
                     'format': 'best',
                     'noplaylist': True,
-                    'nocheckcertificate': True,
-                    'geo_bypass': True,
-                    # HTTP Header bilgilerini bir tarayıcı gibi güncelledik
+                    # --- KRİTİK ÇÖZÜM: Çerez dosyasını kullan ---
+                    'cookiefile': 'cookies.txt', 
+                    # --------------------------------------------
                     'http_headers': {
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-                        'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
-                        'Sec-Fetch-Dest': 'document',
-                        'Sec-Fetch-Mode': 'navigate',
-                        'Sec-Fetch-Site': 'none',
-                        'Sec-Fetch-User': '?1',
-                        'Upgrade-Insecure-Requests': '1',
                     },
-                    # Bazı extractor (ayıştırıcı) ayarları
-                    'extractor_args': {
-                        'youtube': {'player_client': ['android', 'web']},
-                        'tiktok': {'web_proxy': True}
-                    }
+                    'nocheckcertificate': True,
+                    'geo_bypass': True,
                 }
                 
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -52,11 +41,7 @@ def index():
                         }
             except Exception as e:
                 print(f"Hata Detayı: {e}")
-                # Hata mesajını kullanıcıya daha açıklayıcı verelim
-                if "403" in str(e) or "Forbidden" in str(e):
-                    error_message = "TikTok erişimi geçici olarak reddetti. Birkaç dakika sonra tekrar deneyin veya farklı bir link test edin."
-                else:
-                    error_message = "Video bilgileri alınamadı. Linkin doğru olduğundan emin olun."
+                error_message = "TikTok engeli aşılamadı. Lütfen çerez dosyasını güncelleyin veya linki kontrol edin."
 
     return render_template('index.html', video_info=video_info, error_message=error_message)
 

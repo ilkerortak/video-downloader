@@ -48,74 +48,26 @@
         </div>
 
         {% if video_info %}
-        <div class="glass-panel w-full max-w-2xl mt-8 rounded-2xl p-8 border border-blue-500/20 text-center">
-            <div id="status-box">
-                <i id="status-icon" class="fas fa-circle-notch fa-spin text-4xl rgb-text"></i>
-                <p id="status-msg" class="mt-4 text-gray-400">İçerik hazırlanıyor...</p>
-            </div>
+        <div class="glass-panel w-full max-w-2xl mt-8 rounded-2xl p-10 border border-blue-500/20 text-center">
+            <span class="text-[10px] font-black uppercase tracking-widest rgb-text border border-blue-500/20 px-2 py-1 rounded">
+                {{ video_info.platform }} ANALİZ EDİLDİ
+            </span>
+            <h2 class="text-2xl font-bold mt-4 mb-8 italic">Video İndirmeye Hazır!</h2>
             
-            <div id="download-zone" class="hidden">
-                <span class="text-[10px] font-black uppercase tracking-widest rgb-text border border-blue-500/20 px-2 py-1 rounded">{{ video_info.platform }}</span>
-                <h2 class="text-xl font-bold mt-4 mb-6 italic" id="final-title">İndirmeye Hazır!</h2>
-                <a id="final-link" href="#" target="_blank" class="rgb-bg inline-block px-14 py-4 font-extrabold text-md rounded-xl shadow-lg shadow-blue-500/30">
-                   VİDEOYU KAYDET
-                </a>
-            </div>
+            <a href="https://savefrom.net/savefrom.php?url={{ video_info.target_url | urlencode }}" 
+               target="_blank"
+               class="rgb-bg inline-block px-16 py-5 font-extrabold text-lg rounded-xl shadow-lg shadow-blue-500/30 hover:scale-105 transition-all">
+               <i class="fa-solid fa-download mr-2"></i> ŞİMDİ İNDİR
+            </a>
+            
+            <p class="mt-6 text-xs text-gray-500">Butona bastığınızda indirme sayfası yeni sekmede açılacaktır.</p>
         </div>
-
-        <script>
-            async function resolve() {
-                const method = "{{ video_info.method }}";
-                const target = "{{ video_info.target_url }}";
-                const direct = "{{ video_info.url }}";
-
-                // 1. DOĞRUDAN SUNUCUDAN GELEN (YouTube için)
-                if(method === 'direct') {
-                    showFinal(direct, "YouTube Videosu");
-                    return;
-                }
-
-                // 2. TIKTOK ÖZEL
-                if(method === 'js_tiktok') {
-                    try {
-                        const res = await fetch(`https://www.tikwm.com/api/?url=${target}`);
-                        const data = await res.json();
-                        if(data.data) return showFinal(data.data.play, data.data.title);
-                    } catch(e) {}
-                }
-
-                // 3. INSTAGRAM (JS Köprüsü)
-                if(method === 'js_cobalt') {
-                    try {
-                        const res = await fetch('https://api.cobalt.tools/api/json', {
-                            method: 'POST',
-                            headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-                            body: JSON.stringify({url: target, vQuality: "720"})
-                        });
-                        const data = await response.json();
-                        if(data.url) return showFinal(data.url, "Instagram İçeriği");
-                    } catch(e) {}
-                }
-
-                // HATA DURUMU
-                document.getElementById('status-msg').innerHTML = "<span class='text-red-400'>Bu link şu an işlenemiyor. Lütfen linkin doğru ve herkese açık olduğundan emin olun.</span>";
-                document.getElementById('status-icon').className = "fas fa-triangle-exclamation text-red-500 text-4xl";
-            }
-
-            function showFinal(url, title) {
-                document.getElementById('status-box').style.display = 'none';
-                document.getElementById('download-zone').classList.remove('hidden');
-                document.getElementById('final-link').href = url;
-                if(title) document.getElementById('final-title').innerText = title;
-            }
-
-            window.onload = resolve;
-        </script>
         {% endif %}
     </main>
 
     <footer class="mt-20 text-gray-600 text-[10px] font-bold uppercase tracking-[0.3em]">
         &copy; 2026 Hemenİndir.io — <span class="rgb-text">İlker Ortak</span>
     </footer>
+
 </body>
 </html>

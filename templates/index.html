@@ -3,95 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaveFast Pro | Video Downloader</title>
+    <title>SaveFast Pro | Universal Video Downloader</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        .dark-mode { background-color: #003366 !important; color: white; }
-        .light-mode { background-color: #f0f4f8 !important; color: #1e293b; }
-        .dark-card { background-color: #002b55 !important; border-color: #1e40af; }
-        .light-card { background-color: white !important; border-color: #e2e8f0; color: #1e293b; }
-        .transition-all { transition: all 0.3s ease; }
+        body { font-family: 'Inter', sans-serif; transition: background 0.4s ease; }
+        .dark-mode { background-color: #001a33; color: white; }
+        .light-mode { background-color: #f8fafc; color: #0f172a; }
+        .glass-card { backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .video-preview { transition: transform 0.3s ease; }
+        .video-preview:hover { transform: scale(1.02); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.5s ease forwards; }
     </style>
 </head>
-<body id="mainBody" class="min-h-screen flex flex-col transition-all dark-mode">
+<body id="mainBody" class="min-h-screen flex flex-col dark-mode">
 
-    <nav id="navBar" class="shadow-lg p-5 flex justify-between items-center border-b border-blue-900 bg-[#002244]">
-        <h1 class="text-xl font-black text-blue-400 tracking-tighter">SAVEFAST PRO</h1>
-        <button onclick="toggleMode()" class="bg-blue-500/20 hover:bg-blue-500/40 px-4 py-2 rounded-full text-xs font-bold border border-blue-400 transition-all">
-            🌓 Modu Değiştir
+    <nav class="p-6 flex justify-between items-center max-w-6xl mx-auto w-full">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white shadow-lg shadow-blue-900/20">SF</div>
+            <h1 class="text-xl font-extrabold tracking-tighter">SAVEFAST <span class="text-blue-500">PRO</span></h1>
+        </div>
+        <button onclick="toggleMode()" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-90">
+            🌓 <span class="hidden md:inline ml-2 text-xs font-bold uppercase tracking-widest">Görünüm</span>
         </button>
     </nav>
 
-    <main class="flex-grow container mx-auto px-4 py-10 max-w-2xl">
-        
-        <div id="mainCard" class="rounded-3xl shadow-2xl p-6 md:p-8 border transition-all dark-card">
+    <main class="flex-grow container mx-auto px-4 py-6 md:py-12 max-w-5xl">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             
-            <form method="POST" id="downloadForm" class="space-y-4">
-                <input type="text" name="url" placeholder="Link yapıştırın..." id="urlInput"
-                    class="w-full px-6 py-4 bg-[#003d7a] border-2 border-transparent rounded-2xl focus:border-blue-400 outline-none text-white text-lg transition-all">
-                <button type="submit" id="submitBtn" style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);"
-                    class="w-full text-white font-bold py-5 rounded-2xl hover:scale-[1.01] transition-all flex justify-center items-center text-lg">
-                    <span id="btnText">Şimdi İndir</span>
-                    <div id="loaderIcon" class="hidden animate-spin rounded-full border-2 border-t-transparent border-white h-5 w-5 ml-3"></div>
-                </button>
-            </form>
-
-            {% if video_info %}
-            <div id="resultArea" class="mt-8 p-6 rounded-2xl bg-black/20 border border-white/10 text-center animate-fade-in">
-                <img src="{{ video_info.thumb }}" class="w-full h-48 object-cover rounded-xl mb-4 shadow-lg border border-white/20">
-                <h3 class="text-sm font-bold mb-6 text-blue-100 italic">{{ video_info.title }}</h3>
-                <a href="{{ video_info.url }}" download="video.mp4" target="_blank"
-                    class="inline-block w-full bg-green-600 hover:bg-green-700 text-white font-black py-4 rounded-xl shadow-xl transition-all">
-                    GALERİYE KAYDET
-                </a>
-            </div>
-            {% endif %}
-        </div>
-
-        {% if history %}
-        <div class="mt-12">
-            <h4 class="text-xs font-bold text-blue-400 mb-4 tracking-widest uppercase">Son İndirilenler</h4>
-            <div class="grid grid-cols-3 gap-4">
-                {% for item in history %}
-                <div class="group relative overflow-hidden rounded-xl bg-[#002b55] border border-blue-800">
-                    <img src="{{ item.thumb }}" class="w-full h-24 object-cover opacity-60 group-hover:opacity-100 transition-all">
-                    <a href="{{ item.url }}" target="_blank" class="absolute inset-0 flex items-center justify-center text-[10px] font-bold bg-black/40 opacity-0 group-hover:opacity-100 transition-all">
-                        TEKRAR İNDİR
-                    </a>
+            <div class="lg:col-span-7 space-y-8">
+                <div class="space-y-4">
+                    <h2 class="text-4xl md:text-5xl font-black leading-tight">Video İndirmek <br><span class="text-blue-500">Hiç Bu Kadar Kolay</span> Olmamıştı.</h2>
+                    <p class="text-gray-400 text-lg">TikTok, Instagram ve Youtube videolarını saniyeler içinde PC veya telefonuna kaydet.</p>
                 </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
 
+                <div id="mainCard" class="glass-card p-6 md:p-8 rounded-[2rem] bg-white/5 shadow-2xl">
+                    {% if error_message %}
+                        <div class="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-2xl text-red-200 text-sm">⚠️ {{ error_message }}</div>
+                    {% endif %}
+
+                    <form method="POST" id="downloadForm" class="flex flex-col md:flex-row gap-4">
+                        <input type="text" name="url" placeholder="Video bağlantısını buraya bırakın..." id="urlInput"
+                            class="flex-grow px-6 py-5 bg-white/5 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none transition-all text-white">
+                        <button type="submit" id="submitBtn" class="bg-blue-600 hover:bg-blue-700 px-10 py-5 rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center min-w-[160px]">
+                            <span id="btnText text-lg">İndir</span>
+                            <div id="loaderIcon" class="hidden animate-spin rounded-full border-2 border-t-transparent border-white h-5 w-5 ml-3"></div>
+                        </button>
+                    </form>
+
+                    {% if video_info %}
+                    <div class="mt-10 animate-fade">
+                        <div class="video-preview relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+                            <img src="{{ video_info.thumb }}" class="w-full h-64 md:h-80 object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-8">
+                                <span class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">{{ video_info.platform }}</span>
+                                <h3 class="text-xl font-bold mb-4 line-clamp-2 leading-tight">{{ video_info.title }}</h3>
+                                <a href="{{ video_info.url }}" download="savefast_video.mp4" target="_blank"
+                                    class="w-full md:w-max bg-white text-black font-black py-4 px-10 rounded-2xl hover:bg-blue-500 hover:text-white transition-all text-center">
+                                    VİDEO OLARAK KAYDET
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 space-y-6">
+                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em]">Son İşlemler</h4>
+                <div class="grid grid-cols-2 lg:grid-cols-1 gap-4">
+                    {% if history %}
+                        {% for item in history %}
+                        <div class="group relative rounded-2xl overflow-hidden border border-white/5 bg-white/5 hover:border-blue-500/50 transition-all">
+                            <div class="flex items-center p-3 gap-4">
+                                <img src="{{ item.thumb }}" class="w-16 h-16 rounded-xl object-cover shadow-lg">
+                                <div class="hidden md:block overflow-hidden">
+                                    <p class="text-[10px] text-blue-400 font-bold uppercase">{{ item.platform }}</p>
+                                    <p class="text-xs font-medium truncate pr-4 text-gray-300">{{ item.title }}</p>
+                                </div>
+                                <a href="{{ item.url }}" target="_blank" class="absolute inset-0 z-10"></a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="p-8 border-2 border-dashed border-white/5 rounded-3xl text-center text-gray-600">
+                            <p class="text-sm">Henüz bir video indirmediniz.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
     </main>
 
-    <footer class="py-6 text-center text-blue-400/50 text-[10px] font-bold">
-        SAVEFAST PRO &bull; SAKARYA 2026
+    <footer class="p-8 text-center text-gray-600 text-[11px] font-medium tracking-widest">
+        DESIGNED IN SAKARYA &bull; 2026 SAVEFAST PRO
     </footer>
 
     <script>
         function toggleMode() {
             const body = document.getElementById('mainBody');
-            const card = document.getElementById('mainCard');
-            const urlInput = document.getElementById('urlInput');
-            
             if(body.classList.contains('dark-mode')) {
                 body.classList.replace('dark-mode', 'light-mode');
-                card.classList.replace('dark-card', 'light-card');
-                urlInput.style.backgroundColor = '#f1f5f9';
-                urlInput.style.color = '#1e293b';
             } else {
                 body.classList.replace('light-mode', 'dark-mode');
-                card.classList.replace('light-card', 'dark-card');
-                urlInput.style.backgroundColor = '#003d7a';
-                urlInput.style.color = 'white';
             }
         }
 
         document.getElementById('downloadForm').onsubmit = function() {
-            document.getElementById('btnText').innerText = "Aranıyor...";
+            document.getElementById('btnText').innerText = "Hazırlanıyor...";
             document.getElementById('loaderIcon').classList.remove('hidden');
         };
     </script>

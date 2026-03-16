@@ -1,73 +1,65 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaveFast | Video Downloader</title>
+    <title>Hemenİndir.io | Hızlı ve Temiz Video İndirici</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --p-blue: #3b82f6; --d-bg: #020617; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.5s ease; }
+        
+        .dark-mode { background-color: var(--d-bg); color: #f8fafc; }
+        .light-mode { background-color: #f1f5f9; color: #0f172a; }
+
+        .glass-box {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 2.5rem;
+        }
+        .light-mode .glass-box {
+            background: #ffffff;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.03);
+        }
+
+        .input-field {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .input-field:focus {
+            border-color: var(--p-blue);
+            background: rgba(59, 130, 246, 0.05);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            transition: all 0.3s ease;
+        }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); }
+
+        .animate-reveal { animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes reveal { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
-<body style="background-color: #003366; font-family: 'Inter', sans-serif;" class="min-h-screen flex flex-col text-white">
+<body id="mainBody" class="min-h-screen flex flex-col dark-mode">
 
-    <nav style="background-color: #002244;" class="shadow-lg p-4 text-center border-b border-blue-900">
-        <h1 class="text-2xl font-bold text-blue-400 tracking-tight">Domino's A.Ş'ye Hediye <3</h1>
-    </nav>
-
-    <main class="flex-grow container mx-auto px-4 py-12 max-w-2xl">
-        <div class="text-center mb-10">
-            <h2 class="text-3xl font-extrabold text-white mb-2">Hızlı Video İndirici</h2>
-            <p class="text-blue-200">TikTok, Instagram ve YouTube videolarını anında indirin.</p>
+    <header class="w-full max-w-6xl mx-auto p-8 flex justify-between items-center">
+        <div class="flex items-center gap-3 group cursor-default">
+            <div class="w-11 h-11 cta-button rounded-2xl flex items-center justify-center font-extrabold text-white text-xl shadow-lg">Hİ</div>
+            <h1 class="text-2xl font-extrabold tracking-tighter uppercase">Hemenİndir<span class="text-blue-500">.io</span></h1>
         </div>
+        <button onclick="toggleTheme()" class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all active:scale-90">
+            <span id="themeIcon">🌓</span>
+        </button>
+    </header>
 
-        <div style="background-color: #002b55;" class="rounded-3xl shadow-2xl p-6 md:p-10 border border-blue-800">
-            
-            {% if error_message %}
-            <div class="bg-red-900/50 border-l-4 border-red-500 text-red-200 p-4 rounded-lg mb-6 shadow-sm text-sm">
-                {{ error_message }}
-            </div>
-            {% endif %}
-
-            <form method="POST" id="downloadForm" class="space-y-6">
-                <input 
-                    type="text" name="url" placeholder="Video linkini buraya yapıştırın..." 
-                    style="background-color: #003d7a;"
-                    class="w-full px-6 py-4 border-2 border-transparent rounded-2xl focus:border-blue-400 outline-none text-white text-lg transition-all placeholder-blue-300"
-                    required
-                >
-
-                <button 
-                    type="submit" id="submitBtn"
-                    style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);"
-                    class="w-full text-white font-bold py-5 rounded-2xl hover:scale-[1.02] transition-all active:scale-95 shadow-xl flex justify-center items-center text-lg border border-blue-700"
-                >
-                    <span id="btnText">Video'yu İndir</span>
-                    <div id="loaderIcon" class="hidden border-t-transparent border-solid animate-spin rounded-full border-white border-4 h-6 w-6 ml-3"></div>
-                </button>
-            </form>
-
-            {% if video_info %}
-            <div style="background-color: #003d7a;" class="mt-10 p-8 rounded-3xl border border-blue-700 text-center animate-fade-in">
-                <h3 class="text-lg font-bold text-white mb-6 leading-tight">{{ video_info.title }}</h3>
-                <a 
-                    href="{{ video_info.url }}" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-block w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-extrabold py-4 px-12 rounded-2xl transition-all shadow-lg active:scale-95 text-lg"
-                >
-                    Hemen İndir
-                </a>
-            </div>
-            {% endif %}
-        </div>
-    </main>
-
-    <script>
-        document.getElementById('downloadForm').onsubmit = function() {
-            document.getElementById('btnText').innerText = "Hazırlanıyor...";
-            document.getElementById('loaderIcon').classList.remove('hidden');
-            document.getElementById('submitBtn').classList.add('opacity-80', 'cursor-not-allowed');
-        };
-    </script>
-</body>
-</html>
+    <main class="flex-grow flex flex-col items-center justify-center px-6 py-12">
+        
+        <div class="w-full max-w-3xl text-center space-y-6 mb-12 animate-reveal">
+            <h

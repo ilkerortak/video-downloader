@@ -12,11 +12,17 @@ def download_video(url):
     temp_dir = tempfile.gettempdir()
     output_template = os.path.join(temp_dir, '%(title)s.%(ext)s')
 
-    ydl_opts = {
-        'format': 'best', # En iyi kalite
-        'outtmpl': output_template,
+ydl_opts = {
+        'outtmpl': os.path.join(temp_dir, '%(title)s.%(ext)s'),
         'quiet': True,
+        'noplaylist': True,
         'no_warnings': True,
+        'ffmpeg_location': ffmpeg_path,
+        # ÇEREZ DOSYASINI BURADA TANITIYORUZ
+        'cookiefile': 'cookies.txt', 
+        # Instagram engeline karşı kullanıcı gibi davranma:
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
     }
 
     try:

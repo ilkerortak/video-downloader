@@ -31,7 +31,7 @@
             Her Şeyi <span class="rgb-text">Anında</span> İndir.
         </h1>
         <p class="description-text text-center mb-12 text-lg max-w-2xl font-light">
-           Instagram Reels, Tiktok ve daha fazlası ... Hızlı ve tamamen ücretsiz.
+            Tiktok ınstagram ve youtube ... linkini yapıştır filigransız ve en yüksek kalitede saniyeler içinde cihazına kaydet.
         </p>
 
         <div class="glass-panel w-full max-w-2xl rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
@@ -48,26 +48,63 @@
         </div>
 
         {% if video_info %}
-        <div class="glass-panel w-full max-w-2xl mt-8 rounded-2xl p-10 border border-blue-500/20 text-center">
-            <span class="text-[10px] font-black uppercase tracking-widest rgb-text border border-blue-500/20 px-2 py-1 rounded">
-                {{ video_info.platform }} ANALİZ EDİLDİ
-            </span>
-            <h2 class="text-2xl font-bold mt-4 mb-8 italic">Video İndirmeye Hazır!</h2>
+        <div class="glass-panel w-full max-w-2xl mt-8 rounded-2xl p-8 border border-blue-500/20 text-center">
+            <div id="loader-box">
+                <i class="fas fa-spinner fa-spin text-4xl rgb-text"></i>
+                <p class="mt-4 text-gray-400">Medya çözülüyor, az kaldı...</p>
+            </div>
             
-            <a href="https://savefrom.net/savefrom.php?url={{ video_info.target_url | urlencode }}" 
-               target="_blank"
-               class="rgb-bg inline-block px-16 py-5 font-extrabold text-lg rounded-xl shadow-lg shadow-blue-500/30 hover:scale-105 transition-all">
-               <i class="fa-solid fa-download mr-2"></i> ŞİMDİ İNDİR
-            </a>
-            
-            <p class="mt-6 text-xs text-gray-500">Butona bastığınızda indirme sayfası yeni sekmede açılacaktır.</p>
+            <div id="result-box" class="hidden">
+                <span class="text-[10px] font-black uppercase tracking-widest rgb-text border border-blue-500/20 px-2 py-1 rounded">VİDEO HAZIR</span>
+                <h2 class="text-2xl font-bold mt-4 mb-6 italic">Başarıyla Hazırlandı!</h2>
+                <a id="download-link" href="#" target="_blank" class="rgb-bg inline-block px-14 py-4 font-extrabold text-md rounded-xl shadow-lg shadow-blue-500/30">
+                   VİDEOYU KAYDET
+                </a>
+            </div>
         </div>
+
+        <script>
+            async function getMedia() {
+                const target = "{{ video_info.target_url }}";
+                
+                // YouTube ve Instagram'ı aynı anda vuran çoklu motor
+                const apis = [
+                    'https://api.cobalt.tools/api/json',
+                    'https://cobalt-api.mrcyjanek.net/api/json' // Yedek motor
+                ];
+
+                for (let api of apis) {
+                    try {
+                        const response = await fetch(api, {
+                            method: 'POST',
+                            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ url: target, vQuality: "720", isAudioOnly: false })
+                        });
+                        const data = await response.json();
+                        if (data.url) {
+                            showResult(data.url);
+                            return;
+                        }
+                    } catch (e) { continue; }
+                }
+
+                // Her şey başarısız olursa
+                document.getElementById('loader-box').innerHTML = "<p class='text-red-500'>Bu video şu an korunuyor. Lütfen başka bir link deneyin.</p>";
+            }
+
+            function showResult(url) {
+                document.getElementById('loader-box').classList.add('hidden');
+                document.getElementById('result-box').classList.remove('hidden');
+                document.getElementById('download-link').href = url;
+            }
+
+            window.onload = getMedia;
+        </script>
         {% endif %}
     </main>
 
     <footer class="mt-20 text-gray-600 text-[10px] font-bold uppercase tracking-[0.3em]">
         &copy; 2026 Hemenİndir.io — <span class="rgb-text">İlker Ortak</span>
     </footer>
-
 </body>
 </html>

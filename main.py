@@ -6,9 +6,7 @@ import os
 
 app = Flask(__name__)
 
-# Video verilerini çeken fonksiyon
 def get_video_data(url):
-    # TikTok ve YouTube için en sağlam ayarlar
     ydl_opts = {
         'format': 'best',
         'quiet': True,
@@ -20,11 +18,8 @@ def get_video_data(url):
     
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
-        
-        # Video linkini bulma
         video_url = info.get('url')
         if not video_url and 'formats' in info:
-            # En son (genelde en kaliteli) formatı al
             video_url = info['formats'][-1].get('url')
 
         return {
@@ -44,15 +39,43 @@ def index():
             try:
                 video_info = get_video_data(url)
             except Exception as e:
-                print(f"Hata: {e}")
-                error_message = "Video bulunamadı. Linki kontrol edin veya daha sonra tekrar deneyin."
+                error_message = "Video bulunamadı. Lütfen linki kontrol edin."
     
     return render_template('index.html', video_info=video_info, error_message=error_message)
 
-# TELEFONA DİREKT İNDİRTEN KÖPRÜ (PROXY)
 @app.route('/proxy_download')
 def proxy_download():
     video_url = request.args.get('url')
     video_title = request.args.get('title', 'hemenindir_video')
     
     if not video_url:
+        return "URL eksik", 400
+
+    try:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+            'Referer': 'https://www.tiktok.com/'
+        }
+        
+        r = requests.get(video_url, headers=headers, stream=True, timeout=20)
+        r.raise_for_status()
+
+        def generate():
+            for chunk in r.iter_content(chunk_size=1024*1024):
+                if chunk:
+                    yield chunk
+
+        return Response(
+            generate(),
+            mimetype="video/mp4",
+            headers={
+                "Content-Disposition": f"attachment; filename={urllib.parse.quote(video_title)}.mp4",
+                "Content-Type": "video/mp4"
+            }
+        )
+    except Exception as e:
+        return "İndirme başlatılamadı, platform engelliyor olabilir.", 500
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)

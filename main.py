@@ -16,10 +16,12 @@ def index():
             error_message = "Lütfen geçerli bir video bağlantısı girin."
         else:
             try:
+                # En kararlı video linkini çekmek için ayarlar
                 ydl_opts = {
                     'quiet': True,
                     'no_warnings': True,
                     'format': 'best',
+                    'noplaylist': True,
                     'http_headers': {
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                     },
@@ -36,8 +38,8 @@ def index():
                             'thumbnail': info.get('thumbnail')
                         }
             except Exception as e:
-                print(f"Hata: {e}")
-                error_message = "Video analiz edilemedi. Link hatalı veya desteklenmiyor olabilir."
+                print(f"Sistem Hatası: {e}")
+                error_message = "Video analiz edilemedi. Bağlantı kısıtlı veya hatalı olabilir."
 
     return render_template('index.html', video_info=video_info, error_message=error_message)
 

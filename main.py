@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import yt_dlp
 import os
+import requests
 
 app = Flask(__name__)
-app.secret_key = 'ilker_sakarya_54_ozel'
+app.secret_key = 'ilker_sakarya_54_kesin_cozum'
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -13,51 +14,45 @@ def index():
         if not url:
             session['error_message'] = "Lütfen bir bağlantı girin."
         else:
-            try:
-                # TikTok'un en güncel engellerini aşmak için ayarlar
-                ydl_opts = {
-                    'quiet': True,
-                    'no_warnings': True,
-                    'format': 'best',
-                    'noplaylist': True,
-                    'nocheckcertificate': True,
-                    # Çerez dosyası varsa kullan
-                    'cookiefile': 'cookies.txt' if os.path.exists('cookies.txt') else None,
-                    # TikTok'u gerçek bir cihaz olduğuna ikna etmek için:
-                    'http_headers': {
-                        'User-Agent': 'com.zhiliaoapp.musically/2023301040 (Linux; U; Android 10; tr_TR; Samsung SM-G973N; Build/QP1A.190711.020; Cronet/58.0.2991.0)',
-                        'Accept': '*/*',
-                        'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
-                    },
-                    'extractor_args': {
-                        'tiktok': {
-                            'app_version': '33.1.4',
-                            'manifest_app_version': '33.1.4',
-                        }
-                    }
-                }
-                
-                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    info = ydl.extract_info(url, download=False)
-                    if info:
-                        video_url = info.get('url')
-                        # Eğer direkt URL yoksa formatlardan en iyisini seç
-                        if not video_url and 'formats' in info:
-                            video_url = info['formats'][-1].get('url')
-                            
+            # 1. YÖNTEM: TikTok API'si (En Garanti Yol)
+            if "tiktok.com" in url:
+                try:
+                    # TikTok için ücretsiz bir API köprüsü kullanıyoruz
+                    api_url = f"https://www.tikwm.com/api/?url={url}"
+                    response = requests.get(api_url).json()
+                    
+                    if response.get('code') == 0:
+                        data = response.get('data')
                         session['video_info'] = {
-                            'title': info.get('title', 'Video Başarıla Çözüldü'),
-                            'url': video_url,
+                            'title': data.get('title', 'TikTok Videosu'),
+                            'url': data.get('play'), # Filigransız video linki
                         }
                         session.pop('error_message', None)
-            except Exception as e:
-                print(f"Hata Detayı: {e}")
-                if "403" in str(e):
-                    session['error_message'] = "TikTok şu an sunucu IP'sini engelliyor. Lütfen 5 dk sonra tekrar deneyin."
-                else:
+                    else:
+                        session['error_message'] = "TikTok videosu şu an indirilemiyor."
+                except Exception as e:
+                    session['error_message'] = "API bağlantı hatası oluştu."
+            
+            # 2. YÖNTEM: Diğer Platformlar İçin yt-dlp
+            else:
+                try:
+                    ydl_opts = {
+                        'quiet': True,
+                        'format': 'best',
+                        'noplaylist': True,
+                        'nocheckcertificate': True,
+                    }
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                        info = ydl.extract_info(url, download=False)
+                        if info:
+                            session['video_info'] = {
+                                'title': info.get('title', 'Video Çözüldü'),
+                                'url': info.get('url'),
+                            }
+                            session.pop('error_message', None)
+                except:
                     session['error_message'] = "Video bilgileri alınamadı."
-                session.pop('video_info', None)
-        
+
         return redirect(url_for('index'))
 
     video_info = session.pop('video_info', None)

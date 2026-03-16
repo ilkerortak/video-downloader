@@ -6,10 +6,14 @@ import requests
 app = Flask(__name__)
 app.secret_key = 'ilker_sakarya_54_ultra_pro'
 
-# Monetag sw.js dosyasını dışarı açan kod
+import os
+
+# Mevcut app.py içindeki bu fonksiyonu şununla değiştir:
 @app.route('/sw.js')
 def serve_sw():
-    return send_from_directory(os.path.dirname(__file__), 'sw.js', mimetype='application/javascript')
+    # Dosyanın bulunduğu klasörü (ana dizini) tam olarak bulur
+    root_dir = os.path.dirname(os.path.abspath(__file__))
+    return send_from_directory(root_dir, 'sw.js', mimetype='application/javascript')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

@@ -4,118 +4,143 @@
     <meta charset="UTF-8">
     <meta name="monetag" content="69157789678a3b00e0483180d62331ea">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hemenİndir.io | Hızlı Video İndirici</title>
+    <title>Hemenİndir.io | Profesyonel Video İndirici</title>
     
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap)" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; transition: background 0.4s ease; }
-        .dark-mode { background-color: #001a33; color: white; }
-        .light-mode { background-color: #f8fafc; color: #0f172a; }
-        .glass-card { backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
-        .video-preview { transition: transform 0.3s ease; }
-        .video-preview:hover { transform: scale(1.02); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade { animation: fadeIn 0.5s ease forwards; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.4s ease; }
+        .dark-mode { background-color: #000d1a; color: #ffffff; }
+        .light-mode { background-color: #f0f7ff; color: #001a33; }
+        
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2.5rem;
+        }
+        
+        .light-mode .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 26, 51, 0.1);
+        }
+
+        .input-glow:focus {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            border-color: #3b82f6;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-up { animation: slideUp 0.6s ease-out forwards; }
     </style>
 </head>
 <body id="mainBody" class="min-h-screen flex flex-col dark-mode">
 
-    <nav class="p-6 flex justify-between items-center max-w-6xl mx-auto w-full">
-        <div class="flex items-center gap-2">
-            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white shadow-lg shadow-blue-900/20">Hİ</div>
-            <h1 class="text-xl font-extrabold tracking-tighter uppercase">Hemenİndir<span class="text-blue-500">.io</span></h1>
+    <nav class="max-w-6xl mx-auto w-full p-6 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 btn-gradient rounded-2xl flex items-center justify-center font-extrabold text-white text-xl shadow-lg">Hİ</div>
+            <div>
+                <h1 class="text-2xl font-black tracking-tighter leading-none">HEMENİNDİR<span class="text-blue-500">.io</span></h1>
+                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Hızlı & Güvenli</span>
+            </div>
         </div>
-        <button onclick="toggleMode()" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-90">
-            🌓 <span class="hidden md:inline ml-2 text-xs font-bold uppercase tracking-widest">Görünüm</span>
+        <button onclick="toggleMode()" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all">
+            🌓
         </button>
     </nav>
 
-    <main class="flex-grow container mx-auto px-4 py-6 md:py-12 max-w-5xl">
+    <main class="flex-grow container mx-auto px-4 py-12 max-w-4xl">
         
-        <div class="mb-8 flex justify-center min-h-[90px] bg-white/5 rounded-2xl items-center border border-dashed border-white/10">
-            <p class="text-[10px] text-gray-500 uppercase tracking-widest">Sponsorlu Bağlantı</p>
+        <div class="mb-10 flex justify-center min-h-[90px] bg-white/5 rounded-3xl items-center border border-dashed border-white/10">
+            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Sponsorlu Alan</p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-            
-            <div class="lg:col-span-7 space-y-8">
-                <div class="space-y-4">
-                    <h2 class="text-4xl md:text-5xl font-black leading-tight">Video İndirmek <br><span class="text-blue-500">Hiç Bu Kadar Kolay</span> Olmamıştı.</h2>
-                    <p class="text-gray-400 text-lg">TikTok, Instagram ve Youtube videolarını saniyeler içinde PC veya telefonuna kaydet.</p>
+        <div class="text-center space-y-4 mb-12 animate-up">
+            <h2 class="text-5xl md:text-6xl font-extrabold tracking-tight">
+                Her Şeyi <span class="text-blue-500 italic">Anında</span> İndir.
+            </h2>
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
+                TikTok, Instagram ve YouTube videolarını en yüksek kalitede, reklamlara boğulmadan cihazına kaydet.
+            </p>
+        </div>
+
+        <div id="mainCard" class="glass-card p-2 md:p-3 shadow-2xl animate-up" style="animation-delay: 0.2s;">
+            <div class="p-6 md:p-10 space-y-8">
+                
+                {% if error_message %}
+                <div class="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-sm text-center">
+                    ⚠️ {{ error_message }}
                 </div>
+                {% endif %}
 
-                <div id="mainCard" class="glass-card p-6 md:p-8 rounded-[2rem] bg-white/5 shadow-2xl">
-                    {% if error_message %}
-                        <div class="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-2xl text-red-200 text-sm">⚠️ {{ error_message }}</div>
-                    {% endif %}
+                <form method="POST" id="downloadForm" class="flex flex-col md:flex-row gap-4">
+                    <input type="text" name="url" placeholder="Video linkini buraya yapıştır..." id="urlInput"
+                        class="flex-grow px-8 py-5 bg-white/5 border-2 border-white/10 rounded-3xl focus:outline-none input-glow transition-all text-lg dark:text-white">
+                    <button type="submit" id="submitBtn" class="btn-gradient px-12 py-5 rounded-3xl font-bold text-white text-lg transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center min-w-[180px]">
+                        <span id="btnText">Hemen İndir</span>
+                        <div id="loaderIcon" class="hidden animate-spin rounded-full border-2 border-t-transparent border-white h-5 w-5 ml-3"></div>
+                    </button>
+                </form>
 
-                    <form method="POST" id="downloadForm" class="flex flex-col md:flex-row gap-4">
-                        <input type="text" name="url" placeholder="Video bağlantısını buraya bırakın..." id="urlInput"
-                            class="flex-grow px-6 py-5 bg-white/5 border-2 border-transparent rounded-2xl focus:border-blue-500 outline-none transition-all text-white">
-                        <button type="submit" id="submitBtn" class="bg-blue-600 hover:bg-blue-700 px-10 py-5 rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center min-w-[160px]">
-                            <span id="btnText text-lg">İndir</span>
-                            <div id="loaderIcon" class="hidden animate-spin rounded-full border-2 border-t-transparent border-white h-5 w-5 ml-3"></div>
-                        </button>
-                    </form>
-
-                    {% if video_info %}
-                    <div class="mt-10 animate-fade">
-                        <div class="video-preview relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
-                            <img src="{{ video_info.thumb }}" class="w-full h-64 md:h-80 object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-8">
-                                <span class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">{{ video_info.platform }}</span>
-                                <h3 class="text-xl font-bold mb-4 line-clamp-2 leading-tight">{{ video_info.title }}</h3>
-                                <a href="{{ video_info.url }}" download="hemenindir_video.mp4" target="_blank"
-                                    class="w-full md:w-max bg-white text-black font-black py-4 px-10 rounded-2xl hover:bg-blue-500 hover:text-white transition-all text-center">
-                                    VİDEOYU KAYDET
-                                </a>
-                            </div>
+                {% if video_info %}
+                <div class="mt-12 animate-up">
+                    <div class="relative group rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl bg-black">
+                        <img src="{{ video_info.thumb }}" class="w-full h-[400px] object-cover opacity-60 group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#000d1a] via-transparent to-transparent flex flex-col justify-end p-8 md:p-12">
+                            <span class="text-blue-400 font-bold text-sm mb-2">● {{ video_info.platform }}</span>
+                            <h3 class="text-2xl md:text-3xl font-bold mb-6 line-clamp-2">{{ video_info.title }}</h3>
+                            <a href="{{ video_info.url }}" download="hemenindir_video.mp4" target="_blank"
+                                class="w-full md:w-max bg-white text-[#000d1a] font-black py-5 px-12 rounded-2xl hover:bg-blue-500 hover:text-white transition-all text-center text-lg shadow-xl">
+                                GALERİYE KAYDET
+                            </a>
                         </div>
                     </div>
-                    {% endif %}
                 </div>
+                {% endif %}
             </div>
-
-            <div class="lg:col-span-5 space-y-6">
-                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em]">Son İşlemler</h4>
-                <div class="grid grid-cols-2 lg:grid-cols-1 gap-4">
-                    {% if history %}
-                        {% for item in history %}
-                        <div class="group relative rounded-2xl overflow-hidden border border-white/5 bg-white/5 hover:border-blue-500/50 transition-all">
-                            <div class="flex items-center p-3 gap-4">
-                                <img src="{{ item.thumb }}" class="w-16 h-16 rounded-xl object-cover shadow-lg">
-                                <div class="hidden md:block overflow-hidden">
-                                    <p class="text-[10px] text-blue-400 font-bold uppercase">{{ item.platform }}</p>
-                                    <p class="text-xs font-medium truncate pr-4 text-gray-300">{{ item.title }}</p>
-                                </div>
-                                <a href="{{ item.url }}" target="_blank" class="absolute inset-0 z-10"></a>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="p-8 border-2 border-dashed border-white/5 rounded-3xl text-center text-gray-600">
-                            <p class="text-sm">Henüz bir video indirmediniz.</p>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
         </div>
+
+        {% if history %}
+        <div class="mt-20 animate-up" style="animation-delay: 0.4s;">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="h-px bg-white/10 flex-grow"></div>
+                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-[0.3em]">Son İşlemlerin</h4>
+                <div class="h-px bg-white/10 flex-grow"></div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                {% for item in history %}
+                <a href="{{ item.url }}" target="_blank" class="group relative rounded-2xl overflow-hidden border border-white/5 bg-white/5 hover:border-blue-500/50 transition-all">
+                    <img src="{{ item.thumb }}" class="w-full h-32 object-cover opacity-50 group-hover:opacity-100 transition-all">
+                    <div class="absolute inset-0 flex items-end p-2 bg-gradient-to-t from-black/80 to-transparent">
+                        <p class="text-[9px] font-bold truncate">{{ item.title }}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
     </main>
 
-    <footer class="p-8 text-center text-gray-600 text-[11px] font-medium tracking-widest">
-        &copy; 2026 HEMENİNDİR.IO &bull; SAKARYA
+    <footer class="p-10 text-center border-t border-white/5 mt-10">
+        <p class="text-gray-600 text-[11px] font-bold tracking-widest uppercase">
+            &copy; 2026 HEMENİNDİR.IO &bull; SAKARYA, TÜRKİYE
+        </p>
     </footer>
 
     <script>
         function toggleMode() {
             const body = document.getElementById('mainBody');
-            if(body.classList.contains('dark-mode')) {
-                body.classList.replace('dark-mode', 'light-mode');
-            } else {
-                body.classList.replace('light-mode', 'dark-mode');
-            }
+            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
         }
 
         document.getElementById('downloadForm').onsubmit = function() {

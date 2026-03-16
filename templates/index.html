@@ -3,25 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hemenİndir.io | Profesyonel Medya İndirici</title>
+    <title>Hemenİndir.io | Hızlı İndirme</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --rgb-gradient: linear-gradient(90deg, #2f81f7, #00d2ff, #2f81f7); }
-        body { font-family: 'Outfit', sans-serif; background-color: #05070a; color: #ffffff; }
+        body { font-family: 'Outfit', sans-serif; background-color: #05070a; color: #ffffff; transition: 0.3s; }
+        
+        /* Tema Ayarları */
+        body.light-mode { background-color: #f8fafc; color: #0f172a; }
+        .glass-panel { background: rgba(13, 17, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); transition: 0.3s; }
+        body.light-mode .glass-panel { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0, 0, 0, 0.05); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+        
+        /* Giriş Alanı */
+        .input-box { background: #161b22; border: 1px solid #30363d; }
+        body.light-mode .input-box { background: #ffffff; border: 1px solid #e2e8f0; color: #0f172a; }
+        body.light-mode input { color: #0f172a; }
+
         .rgb-text { background: var(--rgb-gradient); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
         .rgb-bg { background: var(--rgb-gradient); background-size: 200% auto; animation: shine 3s linear infinite; }
-        .rgb-border:focus-within { border-image: var(--rgb-gradient) 1; box-shadow: 0 0 15px rgba(47, 129, 247, 0.4); }
         @keyframes shine { to { background-position: 200% center; } }
-        .glass-panel { background: rgba(13, 17, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); }
+        
+        .mode-select { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; display: inline-flex; gap: 4px; }
+        body.light-mode .mode-select { background: rgba(0,0,0,0.05); }
+        
+        .mode-btn { padding: 6px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 13px; }
+        .active-mode { background: #2f81f7; color: white; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center px-4 text-center">
 
-    <div class="absolute top-8 left-8 flex items-center gap-2">
-        <div class="w-9 h-9 rounded-lg rgb-bg flex items-center justify-center font-bold text-white text-sm">Hİ</div>
-        <span class="text-lg font-bold tracking-tight uppercase">HEMENİNDİR<span class="rgb-text">.io</span></span>
+    <div class="absolute top-8 left-8 right-8 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-lg rgb-bg flex items-center justify-center font-bold text-white text-sm">Hİ</div>
+            <span class="text-lg font-bold tracking-tight uppercase">HEMENİNDİR<span class="rgb-text">.io</span></span>
+        </div>
+        <button id="theme-toggle" class="text-xl hover:scale-110 transition-transform">
+            <i class="fa-solid fa-moon text-blue-400" id="theme-icon"></i>
+        </button>
     </div>
 
     <main class="w-full max-w-4xl">
@@ -29,19 +49,24 @@
             Her Şeyi <span class="rgb-text">Anında</span> İndir.
         </h1>
         <p class="text-gray-400 text-lg mb-12 font-light">
-            TikTok, Instagram ve YouTube linkini yapıştır, saniyeler içinde cihazına gelsin.
+            Linkini yapıştır, formatını seç ve tek tıkla cihazına kaydet.
         </p>
 
         <div class="glass-panel w-full max-w-2xl mx-auto rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
-            <form method="POST" action="/" onsubmit="startLoading()">
-                <input type="hidden" name="action" value="info">
+            <form method="POST" action="/" onsubmit="startLoading()" class="space-y-6">
+                <div class="mode-select">
+                    <div id="m-video" class="mode-btn active-mode" onclick="setMode('video')">VİDEO (MP4)</div>
+                    <div id="m-mp3" class="mode-btn" onclick="setMode('mp3')">SES (MP3)</div>
+                    <input type="hidden" name="action" id="action-input" value="video">
+                </div>
+
                 <div class="flex flex-col md:flex-row gap-3">
-                    <div class="bg-[#161b22] border border-[#30363d] rounded-xl flex-grow flex items-center px-4 py-3 rgb-border">
-                        <i class="fa-solid fa-link text-gray-400 mr-3"></i>
-                        <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required class="bg-transparent w-full outline-none text-white">
+                    <div class="input-box flex-grow flex items-center px-4 py-4 rounded-xl">
+                        <i class="fa-solid fa-link text-gray-500 mr-3"></i>
+                        <input type="url" name="url" placeholder="Bağlantıyı yapıştır..." required class="bg-transparent w-full outline-none text-white font-medium">
                     </div>
-                    <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white rounded-xl hover:scale-105 transition-all">
-                        Analiz Et
+                    <button type="submit" class="rgb-bg px-12 py-4 font-bold text-white rounded-xl hover:scale-105 transition-all shadow-lg">
+                        İNDİR
                     </button>
                 </div>
             </form>
@@ -50,40 +75,12 @@
             <p class="mt-4 text-red-500 text-sm font-semibold">{{ error }}</p>
             {% endif %}
         </div>
-
-        {% if preview %}
-        <div class="mt-8 glass-panel w-full max-w-xl mx-auto rounded-3xl p-6 border border-blue-500/20 shadow-xl animate-fade-in">
-            <img src="{{ preview.thumb }}" class="w-full h-40 object-cover rounded-2xl mb-4 border border-white/10">
-            <h3 class="text-sm font-bold mb-6 italic text-gray-300 truncate px-2">{{ preview.title }}</h3>
-            
-            <div class="grid grid-cols-2 gap-4">
-                <form method="POST" onsubmit="startLoading()">
-                    <input type="hidden" name="url" value="{{ preview.url }}">
-                    <input type="hidden" name="action" value="video">
-                    <button class="w-full bg-[#1a1c23] hover:bg-[#252833] py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
-                        <i class="fa-solid fa-video"></i> MP4 İndir
-                    </button>
-                </form>
-                <form method="POST" onsubmit="startLoading()">
-                    <input type="hidden" name="url" value="{{ preview.url }}">
-                    <input type="hidden" name="action" value="mp3">
-                    <button class="w-full rgb-bg py-3 rounded-xl font-bold flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-music"></i> MP3 İndir
-                    </button>
-                </form>
-            </div>
-        </div>
-        {% endif %}
-
+        
         <div id="loader" class="hidden mt-10 w-full max-w-md mx-auto">
-            <div class="w-full bg-[#111] h-1.5 rounded-full overflow-hidden">
+            <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
                 <div id="bar" class="rgb-bg h-full w-0 transition-all duration-300"></div>
             </div>
-            <p class="mt-4 text-[10px] rgb-text font-bold tracking-widest uppercase">İşleniyor, lütfen bekleyin...</p>
-        </div>
-        
-        <div class="mt-8 text-xs text-gray-500 italic">
-            Not: Büyük videolarda indirme butonuna bastıktan sonra işlemin bitmesi 5-10 saniye sürebilir.
+            <p class="mt-4 text-[10px] rgb-text font-bold tracking-widest uppercase animate-pulse">Medya Sakarya'dan yola çıktı, geliyor...</p>
         </div>
     </main>
 
@@ -92,21 +89,40 @@
     </footer>
 
     <script>
+        // MP4 / MP3 Seçimi
+        function setMode(mode) {
+            document.getElementById('action-input').value = mode;
+            document.getElementById('m-video').classList.toggle('active-mode', mode === 'video');
+            document.getElementById('m-mp3').classList.toggle('active-mode', mode === 'mp3');
+        }
+
+        // Tema Değiştirici (Güneş / Hilal Ay)
+        const themeBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        themeBtn.onclick = () => {
+            document.body.classList.toggle('light-mode');
+            if(document.body.classList.contains('light-mode')) {
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                themeIcon.classList.replace('text-blue-400', 'text-orange-500');
+            } else {
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                themeIcon.classList.replace('text-orange-500', 'text-blue-400');
+            }
+        };
+
+        // Loading Bar
         function startLoading() {
-            const loader = document.getElementById('loader');
-            const bar = document.getElementById('bar');
-            loader.classList.remove('hidden');
+            document.getElementById('loader').classList.remove('hidden');
             let w = 0;
             const iv = setInterval(() => {
                 w += (95 - w) * 0.1;
-                bar.style.width = w + '%';
+                document.getElementById('bar').style.width = w + '%';
                 if(w > 94) clearInterval(iv);
-            }, 500);
-
+            }, 600);
             window.onfocus = () => {
                 setTimeout(() => {
-                    loader.classList.add('hidden');
-                    bar.style.width = '0%';
+                    document.getElementById('loader').classList.add('hidden');
+                    document.getElementById('bar').style.width = '0%';
                 }, 1000);
             };
         }

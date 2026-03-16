@@ -3,69 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaveFast | Video Downloader</title>
+    <title>SaveFast Pro | Video Downloader</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .dark-mode { background-color: #003366 !important; color: white; }
+        .light-mode { background-color: #f0f4f8 !important; color: #1e293b; }
+        .dark-card { background-color: #002b55 !important; border-color: #1e40af; }
+        .light-card { background-color: white !important; border-color: #e2e8f0; color: #1e293b; }
+        .transition-all { transition: all 0.3s ease; }
+    </style>
 </head>
-<body style="background-color: #003366; font-family: 'Inter', sans-serif;" class="min-h-screen flex flex-col text-white">
+<body id="mainBody" class="min-h-screen flex flex-col transition-all dark-mode">
 
-    <nav style="background-color: #002244;" class="shadow-lg p-4 text-center border-b border-blue-900">
-        <h1 class="text-2xl font-bold text-blue-400 tracking-tight">Domino's A.Ş'ye Hediye <3</h1>
+    <nav id="navBar" class="shadow-lg p-5 flex justify-between items-center border-b border-blue-900 bg-[#002244]">
+        <h1 class="text-xl font-black text-blue-400 tracking-tighter">SAVEFAST PRO</h1>
+        <button onclick="toggleMode()" class="bg-blue-500/20 hover:bg-blue-500/40 px-4 py-2 rounded-full text-xs font-bold border border-blue-400 transition-all">
+            🌓 Modu Değiştir
+        </button>
     </nav>
 
-    <main class="flex-grow container mx-auto px-4 py-12 max-w-2xl">
-        <div class="text-center mb-10">
-            <h2 class="text-3xl font-extrabold text-white mb-2">Hızlı Video İndirici</h2>
-            <p class="text-blue-200">TikTok, Instagram ve YouTube videolarını anında indirin.</p>
-        </div>
-
-        <div style="background-color: #002b55;" class="rounded-3xl shadow-2xl p-6 md:p-10 border border-blue-800">
+    <main class="flex-grow container mx-auto px-4 py-10 max-w-2xl">
+        
+        <div id="mainCard" class="rounded-3xl shadow-2xl p-6 md:p-8 border transition-all dark-card">
             
-            {% if error_message %}
-            <div class="bg-red-900/50 border-l-4 border-red-500 text-red-200 p-4 rounded-lg mb-6 shadow-sm text-sm">
-                {{ error_message }}
-            </div>
-            {% endif %}
-
-            <form method="POST" id="downloadForm" class="space-y-6">
-                <input 
-                    type="text" name="url" placeholder="Video linkini buraya yapıştırın..." 
-                    style="background-color: #003d7a;"
-                    class="w-full px-6 py-4 border-2 border-transparent rounded-2xl focus:border-blue-400 outline-none text-white text-lg transition-all placeholder-blue-300"
-                    required
-                >
-
-                <button 
-                    type="submit" id="submitBtn"
-                    style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);"
-                    class="w-full text-white font-bold py-5 rounded-2xl hover:scale-[1.02] transition-all active:scale-95 shadow-xl flex justify-center items-center text-lg border border-blue-700"
-                >
-                    <span id="btnText">Video'yu İndir</span>
-                    <div id="loaderIcon" class="hidden border-t-transparent border-solid animate-spin rounded-full border-white border-4 h-6 w-6 ml-3"></div>
+            <form method="POST" id="downloadForm" class="space-y-4">
+                <input type="text" name="url" placeholder="Link yapıştırın..." id="urlInput"
+                    class="w-full px-6 py-4 bg-[#003d7a] border-2 border-transparent rounded-2xl focus:border-blue-400 outline-none text-white text-lg transition-all">
+                <button type="submit" id="submitBtn" style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);"
+                    class="w-full text-white font-bold py-5 rounded-2xl hover:scale-[1.01] transition-all flex justify-center items-center text-lg">
+                    <span id="btnText">Şimdi İndir</span>
+                    <div id="loaderIcon" class="hidden animate-spin rounded-full border-2 border-t-transparent border-white h-5 w-5 ml-3"></div>
                 </button>
             </form>
 
             {% if video_info %}
-            <div style="background-color: #003d7a;" class="mt-10 p-8 rounded-3xl border border-blue-700 text-center animate-fade-in">
-                <h3 class="text-lg font-bold text-white mb-6 leading-tight">{{ video_info.title }}</h3>
-                <a 
-                    href="{{ video_info.url }}" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-block w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-extrabold py-4 px-12 rounded-2xl transition-all shadow-lg active:scale-95 text-lg"
-                >
-                    Hemen İndir
+            <div id="resultArea" class="mt-8 p-6 rounded-2xl bg-black/20 border border-white/10 text-center animate-fade-in">
+                <img src="{{ video_info.thumb }}" class="w-full h-48 object-cover rounded-xl mb-4 shadow-lg border border-white/20">
+                <h3 class="text-sm font-bold mb-6 text-blue-100 italic">{{ video_info.title }}</h3>
+                <a href="{{ video_info.url }}" download="video.mp4" target="_blank"
+                    class="inline-block w-full bg-green-600 hover:bg-green-700 text-white font-black py-4 rounded-xl shadow-xl transition-all">
+                    GALERİYE KAYDET
                 </a>
             </div>
             {% endif %}
         </div>
+
+        {% if history %}
+        <div class="mt-12">
+            <h4 class="text-xs font-bold text-blue-400 mb-4 tracking-widest uppercase">Son İndirilenler</h4>
+            <div class="grid grid-cols-3 gap-4">
+                {% for item in history %}
+                <div class="group relative overflow-hidden rounded-xl bg-[#002b55] border border-blue-800">
+                    <img src="{{ item.thumb }}" class="w-full h-24 object-cover opacity-60 group-hover:opacity-100 transition-all">
+                    <a href="{{ item.url }}" target="_blank" class="absolute inset-0 flex items-center justify-center text-[10px] font-bold bg-black/40 opacity-0 group-hover:opacity-100 transition-all">
+                        TEKRAR İNDİR
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
     </main>
 
+    <footer class="py-6 text-center text-blue-400/50 text-[10px] font-bold">
+        SAVEFAST PRO &bull; SAKARYA 2026
+    </footer>
+
     <script>
+        function toggleMode() {
+            const body = document.getElementById('mainBody');
+            const card = document.getElementById('mainCard');
+            const urlInput = document.getElementById('urlInput');
+            
+            if(body.classList.contains('dark-mode')) {
+                body.classList.replace('dark-mode', 'light-mode');
+                card.classList.replace('dark-card', 'light-card');
+                urlInput.style.backgroundColor = '#f1f5f9';
+                urlInput.style.color = '#1e293b';
+            } else {
+                body.classList.replace('light-mode', 'dark-mode');
+                card.classList.replace('light-card', 'dark-card');
+                urlInput.style.backgroundColor = '#003d7a';
+                urlInput.style.color = 'white';
+            }
+        }
+
         document.getElementById('downloadForm').onsubmit = function() {
-            document.getElementById('btnText').innerText = "Hazırlanıyor...";
+            document.getElementById('btnText').innerText = "Aranıyor...";
             document.getElementById('loaderIcon').classList.remove('hidden');
-            document.getElementById('submitBtn').classList.add('opacity-80', 'cursor-not-allowed');
         };
     </script>
 </body>

@@ -4,10 +4,10 @@ import urllib.parse
 import os
 
 app = Flask(__name__)
-app.secret_key = "ilker_secret_key_54" # Session için gerekli
+app.secret_key = "ilker_54_sakarya"
 
 def fetch_video(url):
-    # --- TIKTOK ---
+    # --- TIKTOK (Sorunsuz Çalışıyor) ---
     if "tiktok.com" in url:
         try:
             r = requests.get(f"https://www.tikwm.com/api/?url={url}", timeout=10).json()
@@ -17,14 +17,10 @@ def fetch_video(url):
         except: pass
 
     # --- INSTAGRAM & YOUTUBE ---
+    # Sunucu IP bloklamasını aşmak için veriyi arayüzde (index.html) işleyeceğiz
     if any(x in url for x in ["instagram.com", "youtube.com", "youtu.be"]):
-        try:
-            headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-            payload = {'url': url, 'vQuality': '720'}
-            res = requests.post('https://api.cobalt.tools/api/json', headers=headers, json=payload, timeout=12).json()
-            if res.get('url'):
-                return {'url': res['url'], 'title': 'Video Hazır', 'thumb': 'https://img.icons8.com/fluency/96/video.png', 'platform': 'Sosyal Medya'}
-        except: pass
+        return {'url': 'CLIENT_SIDE', 'target_url': url, 'platform': 'Instagram' if 'instagram' in url else 'YouTube'}
+    
     return None
 
 @app.route('/', methods=['GET', 'POST'])
@@ -34,10 +30,9 @@ def index():
         if url:
             video_info = fetch_video(url)
             if video_info:
-                session['video_info'] = video_info # Veriyi session'a atıyoruz
-        return redirect(url_for('index')) # Sayfayı POST'tan kurtarıp GET'e yönlendiriyoruz
+                session['video_info'] = video_info
+        return redirect(url_for('index'))
     
-    # Sayfa GET ile açıldığında session'da veri varsa al ve sil
     video_info = session.pop('video_info', None)
     return render_template('index.html', video_info=video_info)
 

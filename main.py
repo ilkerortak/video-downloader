@@ -6,6 +6,11 @@ import requests
 app = Flask(__name__)
 app.secret_key = 'ilker_sakarya_54_ultra_pro'
 
+# Monetag sw.js dosyasını dışarı açan kod
+@app.route('/sw.js')
+def serve_sw():
+    return send_from_directory(os.path.dirname(__file__), 'sw.js', mimetype='application/javascript')
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     # Geçmiş listesini session'da başlat

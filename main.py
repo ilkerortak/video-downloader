@@ -4,22 +4,21 @@ import urllib.parse
 import os
 
 app = Flask(__name__)
-app.secret_key = "ilker_54_sakarya"
+app.secret_key = "ilker_ortak_54_sakarya"
 
 def fetch_video(url):
-    # --- TIKTOK (Sorunsuz Çalışıyor) ---
+    # TIKTOK (Stabil devam)
     if "tiktok.com" in url:
         try:
             r = requests.get(f"https://www.tikwm.com/api/?url={url}", timeout=10).json()
             if r.get('code') == 0:
                 d = r['data']
-                return {'url': d['play'], 'title': d.get('title', 'TikTok'), 'thumb': d.get('cover'), 'platform': 'TikTok'}
+                return {'url': d['play'], 'title': d.get('title', 'TikTok'), 'thumb': d.get('cover'), 'platform': 'TikTok', 'method': 'direct'}
         except: pass
 
-    # --- INSTAGRAM & YOUTUBE ---
-    # Sunucu IP bloklamasını aşmak için veriyi arayüzde (index.html) işleyeceğiz
+    # INSTAGRAM / YOUTUBE (Yeni Nesil JS Köprüsü)
     if any(x in url for x in ["instagram.com", "youtube.com", "youtu.be"]):
-        return {'url': 'CLIENT_SIDE', 'target_url': url, 'platform': 'Instagram' if 'instagram' in url else 'YouTube'}
+        return {'target_url': url, 'platform': 'Instagram' if 'instagram' in url else 'YouTube', 'method': 'js_bridge'}
     
     return None
 
@@ -41,7 +40,7 @@ def proxy_download():
     video_url = request.args.get('url')
     video_title = request.args.get('title', 'hemenindir')
     try:
-        headers = {'User-Agent': 'Mozilla/5.0'}
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
         r = requests.get(video_url, headers=headers, stream=True, timeout=30)
         return Response(r.iter_content(chunk_size=1024*1024), mimetype="video/mp4",
                         headers={"Content-Disposition": f"attachment; filename={urllib.parse.quote(video_title)}.mp4"})

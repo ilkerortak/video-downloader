@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 def fetch_video(url):
-    # --- 1. TIKTOK MOTORU (DOKUNULMADI - AYNI KALDI) ---
+    # --- 1. TIKTOK MOTORU (DOKUNULMADI) ---
     if "tiktok.com" in url:
         try:
             r = requests.get(f"https://www.tikwm.com/api/?url={url}", timeout=10).json()
@@ -20,35 +20,36 @@ def fetch_video(url):
                 }
         except: pass
 
-    # --- 2. YOUTUBE MOTORU (YENİ VE GÜÇLENDİRİLMİŞ) ---
+    # --- 2. YOUTUBE MOTORU (ALTERNATİF GÜÇLÜ KÖPRÜ) ---
     elif "youtube.com" in url or "youtu.be" in url:
         try:
-            # Cobalt API'ye istek gönderiyoruz
-            headers = {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-            payload = {
-                'url': url,
-                'vQuality': '720', # Hızlı ve kaliteli sonuç için
-                'filenameStyle': 'basic'
-            }
+            # YouTube için farklı bir API sağlayıcısı deniyoruz
+            # Bu servis YouTube linkini analiz edip MP4 adresini döner
+            api_url = f"https://api.vkrdownloader.com/server?vkr={url}"
+            res = requests.get(api_url, timeout=15).json()
             
-            # Cobalt'ın ana API ucuna bağlanıyoruz
-            res = requests.post('https://api.cobalt.tools/api/json', headers=headers, json=payload, timeout=15).json()
-            
-            # Cobalt 'stream' veya 'redirect' dönerse başarılıdır
-            if res.get('status') in ['stream', 'redirect', 'success']:
-                video_url = res.get('url')
+            if res.get('data'):
+                d = res['data']
+                # En kaliteli video linkini yakala
+                v_url = d['url'][0] if isinstance(d['url'], list) else d['url']
                 return {
-                    'url': video_url,
-                    'title': 'YouTube Videosu',
-                    'thumb': 'https://www.gstatic.com/youtube/img/branding/youtubelogo/2x/youtube_logo_dark_v2021.png', # YouTube Logosu
+                    'url': v_url,
+                    'title': d.get('title', 'YouTube Videosu'),
+                    'thumb': d.get('thumbnail', 'https://www.gstatic.com/youtube/img/branding/youtubelogo/2x/youtube_logo_dark_v2021.png'),
                     'platform': 'YouTube'
                 }
-        except Exception as e:
-            print(f"YouTube Hatası: {e}")
-            pass
+        except:
+            # Eğer üstteki patlarsa son çare olarak bu basit köprüyü dene
+            try:
+                alt_res = requests.get(f"https://api.boxentriq.com/social/video?url={url}", timeout=10).json()
+                if alt_res.get('url'):
+                    return {
+                        'url': alt_res['url'],
+                        'title': alt_res.get('title', 'YouTube Video'),
+                        'thumb': alt_res.get('thumbnail', ''),
+                        'platform': 'YouTube'
+                    }
+            except: pass
 
     return None
 
@@ -64,7 +65,7 @@ def index():
         else:
             video_info = fetch_video(url)
             if not video_info:
-                error_message = "Video şu an çekilemedi. YouTube veya link erişime kapalı olabilir."
+                error_message = "YouTube şu an yoğun veya link hatalı. Lütfen tekrar deneyin."
     
     return render_template('index.html', video_info=video_info, error_message=error_message)
 
@@ -73,25 +74,22 @@ def proxy_download():
     video_url = request.args.get('url')
     video_title = request.args.get('title', 'hemenindir_video')
     
-    if not video_url:
-        return "Geçersiz istek.", 400
+    if not video_url: return "Geçersiz istek.", 400
 
     try:
-        # YouTube videolarını indirirken bazen 'User-Agent' şarttır
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        }
-        r = requests.get(video_url, headers=headers, stream=True, timeout=30)
+        # YouTube videoları için özel yönlendirme (Direct Download)
+        # Bazı YouTube linkleri doğrudan indirmeye izin verir, bazıları proxy gerektirir
+        if "googlevideo.com" in video_url:
+            # YouTube sunucuları proxy üzerinden çekilmeyi bazen engeller, direkt yönlendirelim
+            return Response(requests.get(video_url, stream=True).iter_content(chunk_size=1024*1024),
+                            mimetype="video/mp4",
+                            headers={"Content-Disposition": f"attachment; filename={urllib.parse.quote(video_title)}.mp4"})
         
-        return Response(
-            r.iter_content(chunk_size=1024*1024),
-            mimetype="video/mp4",
-            headers={
-                "Content-Disposition": f"attachment; filename={urllib.parse.quote(video_title)}.mp4"
-            }
-        )
+        r = requests.get(video_url, stream=True, timeout=30)
+        return Response(r.iter_content(chunk_size=1024*1024), mimetype="video/mp4",
+                        headers={"Content-Disposition": f"attachment; filename={urllib.parse.quote(video_title)}.mp4"})
     except:
-        return "Dosya sunucudan çekilemedi.", 500
+        return "İndirme başlatılamadı.", 500
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8080))

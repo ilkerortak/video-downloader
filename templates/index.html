@@ -16,10 +16,9 @@
             font-family: 'Outfit', sans-serif; 
             background-color: #05070a; 
             color: #ffffff; 
-            transition: background-color 0.3s ease;
         }
 
-        /* Akıcı Mavi RGB Efekti (Yazılar ve Kenarlıklar İçin) */
+        /* Akıcı Mavi RGB Efekti */
         .rgb-text {
             background: var(--rgb-gradient);
             background-size: 200% auto;
@@ -54,18 +53,16 @@
             transition: 0.3s; 
         }
 
-        /* Gece/Gündüz Modu İçin Ufak Bir Ayar (Opsiyonel) */
-        @media (prefers-color-scheme: light) {
-            .light-mode-active body { background-color: #f0f2f5; color: #1c1e21; }
-            .light-mode-active .glass-panel { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0,0,0,0.1); }
-            .light-mode-active .input-area { background: #ffffff; border: 1px solid #ddd; color: #000; }
+        /* Açık Gri Paragraf */
+        .description-text {
+            color: #d1d5db; /* Tailwind gray-300 tonu */
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center px-4">
 
     <div class="absolute top-8 left-8 flex items-center gap-2">
-        <div class="w-9 h-9 rounded-lg rgb-bg flex items-center justify-center font-bold text-white text-sm shadow-lg shadow-blue-500/20">Hİ</div>
+        <div class="w-9 h-9 rounded-lg rgb-bg flex items-center justify-center font-bold text-white text-sm">Hİ</div>
         <span class="text-lg font-bold tracking-tight uppercase">HEMENİNDİR<span class="rgb-text">.io</span></span>
     </div>
 
@@ -73,25 +70,26 @@
         <h1 class="text-5xl md:text-7xl font-extrabold text-center mb-4 tracking-tight">
             Her Şeyi <span class="rgb-text">Anında</span> İndir.
         </h1>
-        <p class="text-gray-400 text-center mb-12 text-lg max-w-xl">
-            Instagram Reels, TikTok ve daha fazlası... <span class="rgb-text font-semibold">Hızlı</span> ve tamamen ücretsiz.
+        
+        <p class="description-text text-center mb-12 text-lg max-w-2xl font-light">
+            Tiktok ınstagram ve youtube ... linkini yapıştır filigransız ve en yüksek kalitede saniyeler içinde cihazına kaydet.
         </p>
 
         <div class="glass-panel w-full max-w-2xl rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
             <form method="POST" action="/" class="flex flex-col md:flex-row gap-3">
                 <div class="input-area flex-grow flex items-center px-4 py-3 rgb-border">
-                    <i class="fa-solid fa-link text-gray-500 mr-3"></i>
+                    <i class="fa-solid fa-link text-gray-400 mr-3"></i>
                     <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required
                         class="bg-transparent w-full outline-none text-white text-base placeholder-gray-600">
                 </div>
-                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white flex items-center justify-center gap-2 rounded-xl hover:scale-105 transition-transform shadow-lg shadow-blue-500/20">
+                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white flex items-center justify-center gap-2 rounded-xl hover:scale-105 transition-transform">
                     <i class="fa-solid fa-bolt"></i> İndir
                 </button>
             </form>
         </div>
 
         {% if video_info %}
-        <div class="glass-panel w-full max-w-2xl mt-8 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 border border-blue-500/30">
+        <div class="glass-panel w-full max-w-2xl mt-8 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 border border-blue-500/20">
             <div class="w-24 h-24 bg-gray-800 rounded-xl overflow-hidden flex items-center justify-center ring-2 ring-blue-500/20">
                 <img src="{{ video_info.thumb }}" class="w-full h-full object-cover">
             </div>

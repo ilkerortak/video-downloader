@@ -3,150 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hemenİndir.io | Profesyonel Medya İndirici</title>
+    <title>Hemenİndir.io | TikTok Tarzı İndirici</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: #050505;
-            color: #ffffff;
-            overflow-x: hidden;
-        }
-
-        /* Neon Arka Plan Işıkları */
-        .neon-orb-1 {
-            position: absolute; width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(59,130,246,0.2) 0%, rgba(0,0,0,0) 70%);
-            top: -100px; left: -100px; filter: blur(60px); z-index: -1;
-        }
-        .neon-orb-2 {
-            position: absolute; width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, rgba(0,0,0,0) 70%);
-            bottom: -150px; right: -100px; filter: blur(60px); z-index: -1;
-        }
-
-        /* Cam Efekti */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        .text-gradient {
-            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .magic-input {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-        .magic-input:focus {
-            outline: none;
-            border-color: #4facfe;
-            box-shadow: 0 0 20px rgba(79, 172, 254, 0.2);
-        }
-
-        .magic-btn {
-            background: linear-gradient(45deg, #0061ff, #60efff);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .magic-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.4);
-        }
-
-        .fade-in {
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        body { font-family: 'Outfit', sans-serif; background-color: #0b0b0b; color: #fff; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .tiktok-card { max-width: 400px; width: 100%; margin-top: 2rem; border-radius: 2rem; overflow: hidden; animation: slideUp 0.5s ease; }
+        .download-btn { background: #fe2c55; transition: 0.3s; } /* TikTok Kırmızısı */
+        .download-btn:hover { background: #ef2950; transform: scale(1.02); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center relative px-4 py-10">
+<body class="min-h-screen flex flex-col items-center px-4 py-12">
 
-    <div class="neon-orb-1"></div>
-    <div class="neon-orb-2"></div>
-
-    <div class="absolute top-8 left-8 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center font-bold text-white shadow-lg">Hİ</div>
-        <span class="text-xl font-bold tracking-tighter uppercase">HEMENİNDİR<span class="text-blue-500">.io</span></span>
+    <div class="mb-10 text-center">
+        <h1 class="text-3xl font-extrabold tracking-tighter italic">HEMENİNDİR<span class="text-red-500">.io</span></h1>
     </div>
 
-    <main class="w-full max-w-3xl flex flex-col items-center z-10 fade-in">
-        <h1 class="text-4xl md:text-6xl font-extrabold text-center mb-4 tracking-tight">
-            Her Şeyi <span class="text-gradient">Anında</span> İndir.
-        </h1>
-        <p class="text-gray-400 text-center mb-10 max-w-xl font-light">
-            Filigransız ve en yüksek kalitede videolar saniyeler içinde cihazında.
-        </p>
+    <div class="glass w-full max-w-lg p-2 rounded-full flex items-center pr-2">
+        <input type="url" name="url" id="urlInput" placeholder="Bağlantıyı buraya yapıştır..." 
+            class="bg-transparent flex-grow py-3 px-6 outline-none text-white text-lg">
+        <button onclick="document.getElementById('mainForm').submit()" class="download-btn px-6 py-3 rounded-full font-bold">
+            <i class="fa-solid fa-arrow-down"></i>
+        </button>
+    </div>
 
-        <div class="glass-panel w-full rounded-3xl p-5 md:p-8">
-            <form method="POST" action="/" class="flex flex-col md:flex-row gap-4">
-                <div class="relative flex-grow">
-                    <i class="fa-solid fa-link absolute left-5 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                    <input type="url" name="url" placeholder="Video bağlantısını buraya yapıştırın..." required
-                        class="magic-input w-full py-4 pl-12 pr-6 rounded-2xl text-white text-lg">
-                </div>
-                <button type="submit" class="magic-btn px-8 py-4 rounded-2xl font-bold text-white flex items-center justify-center gap-2 text-lg">
-                    <i class="fa-solid fa-bolt-lightning"></i> İndir
-                </button>
-            </form>
+    <form id="mainForm" method="POST" action="/" class="hidden">
+        <input type="url" name="url" id="hiddenUrl">
+    </form>
+    <script>
+        document.getElementById('urlInput').addEventListener('input', (e) => {
+            document.getElementById('hiddenUrl').value = e.target.value;
+        });
+    </script>
+
+    {% if video_info %}
+    <div class="tiktok-card glass flex flex-col">
+        <div class="relative aspect-[9/16] bg-black">
+            <img src="{{ video_info.thumb }}" class="w-full h-full object-cover opacity-80">
+            <div class="absolute inset-0 flex items-center justify-center">
+                <i class="fa-solid fa-play text-6xl opacity-50"></i>
+            </div>
         </div>
-
-        {% if video_info %}
-        <div class="glass-panel w-full mt-8 rounded-3xl p-6 flex flex-col items-center fade-in">
+        
+        <div class="p-6 text-center">
+            <div class="flex items-center justify-center gap-2 mb-2">
+                <span class="text-xs font-bold uppercase tracking-widest text-red-500">{{ video_info.platform }}</span>
+            </div>
+            <h2 class="text-lg font-semibold mb-6 line-clamp-2">{{ video_info.title }}</h2>
             
-            {% if video_info.url == 'UI_HANDLED' %}
-                <div class="text-center w-full py-4">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-500/20 rounded-full mb-4">
-                        <i class="fa-solid fa-circle-check text-3xl text-blue-400"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold mb-2">Video Bağlantısı Hazır!</h2>
-                    <p class="text-gray-400 mb-8 text-sm">İndirme işlemini tamamlamak için aşağıdaki butona dokunun.</p>
-                    
-                    <a href="https://vkrdownloader.com/server?vkr={{ video_info.target_url | urlencode }}" 
-                       target="_blank"
-                       class="magic-btn inline-flex px-12 py-5 rounded-2xl font-extrabold text-white items-center gap-3 shadow-xl">
-                       <i class="fa-solid fa-download text-xl"></i> VİDEOYU CİHAZA KAYDET
-                    </a>
-                </div>
-            {% else %}
-                <div class="flex flex-col md:flex-row items-center gap-6 w-full">
-                    <img src="{{ video_info.thumb }}" class="w-full md:w-40 h-auto rounded-xl shadow-lg border border-white/10">
-                    <div class="flex-grow text-center md:text-left">
-                        <span class="text-xs font-bold uppercase text-blue-400 bg-blue-500/10 px-2 py-1 rounded border border-blue-500/20">
-                            <i class="fa-brands fa-tiktok mr-1"></i> {{ video_info.platform }}
-                        </span>
-                        <h2 class="text-xl font-semibold mt-3 mb-5 line-clamp-2 leading-tight">{{ video_info.title }}</h2>
-                        <a href="/proxy_download?url={{ video_info.url | urlencode }}&title={{ video_info.title | urlencode }}" 
-                           class="magic-btn inline-flex px-8 py-4 rounded-xl font-bold text-white items-center gap-2 shadow-lg">
-                           <i class="fa-solid fa-download"></i> ŞİMDİ İNDİR
-                        </a>
-                    </div>
-                </div>
-            {% endif %}
+            <a href="/proxy_download?url={{ video_info.url | urlencode }}&title={{ video_info.title | urlencode }}" 
+               class="download-btn w-full block py-4 rounded-xl font-extrabold text-lg shadow-lg">
+               <i class="fa-solid fa-download mr-2"></i> VİDEOYU İNDİR
+            </a>
         </div>
-        {% endif %}
+    </div>
+    {% endif %}
 
-        {% if error_message %}
-        <div class="mt-6 text-red-400 text-sm flex items-center gap-2 bg-red-500/10 px-4 py-2 rounded-lg border border-red-500/20">
-            <i class="fa-solid fa-circle-exclamation"></i> {{ error_message }}
-        </div>
-        {% endif %}
+    {% if error_message %}
+    <div class="mt-8 text-red-500 font-medium bg-red-500/10 px-6 py-3 rounded-full border border-red-500/20">
+        {{ error_message }}
+    </div>
+    {% endif %}
 
-    </main>
-
-    <footer class="mt-20 text-gray-600 text-xs font-medium tracking-widest uppercase">
-        &copy; 2026 Hemenİndir.io — İlker Ortak
+    <footer class="mt-auto pt-10 text-gray-500 text-xs">
+        &copy; 2026 İlker Ortak — Sakarya Adapazarı 🚀
     </footer>
 
 </body>

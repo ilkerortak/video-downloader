@@ -3,80 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Downloader | Hızlı ve Ücretsiz</title>
+    <title>SaveFast | Video Downloader</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-    </style>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
+<body style="background-color: #003366; font-family: 'Inter', sans-serif;" class="min-h-screen flex flex-col text-white">
 
-    <nav class="bg-white shadow-sm p-4 text-center">
-        <h1 class="text-2xl font-bold text-indigo-600 tracking-tight">Domino's A.Ş'ye Hediyem</h1>
+    <nav style="background-color: #002244;" class="shadow-lg p-4 text-center border-b border-blue-900">
+        <h1 class="text-2xl font-bold text-blue-400 tracking-tight">Domino's A.Ş'ye Hediye <3</h1>
     </nav>
 
     <main class="flex-grow container mx-auto px-4 py-12 max-w-2xl">
         <div class="text-center mb-10">
-            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Video İndirmek Artık Çok Kolay</h2>
-            <p class="text-gray-600">YouTube, Instagram ve daha fazlasından saniyeler içinde video çekin.</p>
+            <h2 class="text-3xl font-extrabold text-white mb-2">Hızlı Video İndirici</h2>
+            <p class="text-blue-200">TikTok, Instagram ve YouTube videolarını anında indirin.</p>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+        <div style="background-color: #002b55;" class="rounded-3xl shadow-2xl p-6 md:p-10 border border-blue-800">
             
             {% if error_message %}
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg mb-6 shadow-sm">
-                <p class="font-bold">Hata!</p>
-                <p>{{ error_message }}</p>
+            <div class="bg-red-900/50 border-l-4 border-red-500 text-red-200 p-4 rounded-lg mb-6 shadow-sm text-sm">
+                {{ error_message }}
             </div>
             {% endif %}
 
-            <form method="POST" class="space-y-4">
-                <div class="relative">
-                    <input 
-                        type="text" 
-                        name="url" 
-                        placeholder="Video bağlantısını buraya yapıştırın..." 
-                        class="w-full px-5 py-4 bg-gray-100 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700 text-lg transition-all"
-                        required
-                    >
-                </div>
-                <button 
-                    type="submit" 
-                    class="w-full gradient-bg text-white font-bold py-4 rounded-xl hover:opacity-90 transition-transform active:scale-95 shadow-lg"
+            <form method="POST" id="downloadForm" class="space-y-6">
+                <input 
+                    type="text" name="url" placeholder="Video linkini buraya yapıştırın..." 
+                    style="background-color: #003d7a;"
+                    class="w-full px-6 py-4 border-2 border-transparent rounded-2xl focus:border-blue-400 outline-none text-white text-lg transition-all placeholder-blue-300"
+                    required
                 >
-                    Link Oluştur
+
+                <button 
+                    type="submit" id="submitBtn"
+                    style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);"
+                    class="w-full text-white font-bold py-5 rounded-2xl hover:scale-[1.02] transition-all active:scale-95 shadow-xl flex justify-center items-center text-lg border border-blue-700"
+                >
+                    <span id="btnText">Video'yu İndir</span>
+                    <div id="loaderIcon" class="hidden border-t-transparent border-solid animate-spin rounded-full border-white border-4 h-6 w-6 ml-3"></div>
                 </button>
             </form>
 
             {% if video_info %}
-            <div class="mt-8 p-6 border-t border-gray-100 animate-fade-in">
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-indigo-100 p-4 rounded-full mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ video_info.title }}</h3>
-                    <a 
-                        href="{{ video_info.url }}" 
-                        target="_blank" 
-                        class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full transition-colors shadow-md"
-                        download
-                    >
-                        Hemen İndir
-                    </a>
-                    <p class="mt-3 text-xs text-gray-400 italic font-medium">Not: İndirme başlamazsa sağ tıklayıp "Bağlantıyı farklı kaydet" deyin.</p>
-                </div>
+            <div style="background-color: #003d7a;" class="mt-10 p-8 rounded-3xl border border-blue-700 text-center animate-fade-in">
+                <h3 class="text-lg font-bold text-white mb-6 leading-tight">{{ video_info.title }}</h3>
+                <a 
+                    href="{{ video_info.url }}" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-block w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-extrabold py-4 px-12 rounded-2xl transition-all shadow-lg active:scale-95 text-lg"
+                >
+                    Hemen İndir
+                </a>
             </div>
             {% endif %}
         </div>
     </main>
 
-    <footer class="bg-white py-6 text-center text-gray-400 text-sm border-t border-gray-100">
-        &copy; 2026 SaveFast - Tüm hakları saklıdır.
-    </footer>
-
+    <script>
+        document.getElementById('downloadForm').onsubmit = function() {
+            document.getElementById('btnText').innerText = "Hazırlanıyor...";
+            document.getElementById('loaderIcon').classList.remove('hidden');
+            document.getElementById('submitBtn').classList.add('opacity-80', 'cursor-not-allowed');
+        };
+    </script>
 </body>
 </html>

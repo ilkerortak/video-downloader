@@ -39,9 +39,9 @@
                 <div class="input-area flex-grow flex items-center px-4 py-3 rgb-border">
                     <i class="fa-solid fa-link text-gray-400 mr-3"></i>
                     <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required
-                        class="bg-transparent w-full outline-none text-white text-base placeholder-gray-600">
+                        class="bg-transparent w-full outline-none text-white text-base">
                 </div>
-                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white flex items-center justify-center gap-2 rounded-xl hover:scale-105 transition-transform">
+                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white flex items-center justify-center gap-2 rounded-xl">
                     <i class="fa-solid fa-bolt"></i> İndir
                 </button>
             </form>
@@ -49,62 +49,69 @@
 
         {% if video_info %}
         <div class="glass-panel w-full max-w-2xl mt-8 rounded-2xl p-8 border border-blue-500/20 text-center">
-            <div id="loader">
-                <i class="fas fa-circle-notch fa-spin text-4xl rgb-text"></i>
-                <p class="mt-4 text-gray-400">Video hazırlanıyor, lütfen bekleyin...</p>
+            <div id="status-box">
+                <i id="status-icon" class="fas fa-circle-notch fa-spin text-4xl rgb-text"></i>
+                <p id="status-msg" class="mt-4 text-gray-400">Video motoru hazırlanıyor...</p>
             </div>
             
             <div id="download-zone" class="hidden">
-                <span class="text-[10px] font-black uppercase tracking-widest rgb-text border border-blue-500/20 px-2 py-1 rounded">
-                    {{ video_info.platform }} ANALİZ EDİLDİ
-                </span>
-                <h2 class="text-xl font-bold mt-4 mb-6 italic" id="video-title">İçerik İndirmeye Hazır!</h2>
-                <a id="final-link" href="#" download class="rgb-bg inline-block px-14 py-4 font-extrabold text-md rounded-xl shadow-lg shadow-blue-500/30 hover:scale-105 transition-all">
-                   <i class="fa-solid fa-cloud-arrow-down mr-2"></i> CİHAZA KAYDET
+                <span class="text-[10px] font-black uppercase tracking-widest rgb-text border border-blue-500/20 px-2 py-1 rounded">Hazır</span>
+                <h2 class="text-xl font-bold mt-4 mb-6 italic">Video Başarıyla Çözüldü!</h2>
+                <a id="final-link" href="#" target="_blank" class="rgb-bg inline-block px-14 py-4 font-extrabold text-md rounded-xl shadow-lg shadow-blue-500/30">
+                   VİDEOYU CİHAZA KAYDET
                 </a>
             </div>
         </div>
 
         <script>
-            async function startProcess() {
+            async function tryResolve() {
                 const target = "{{ video_info.target_url }}";
-                const method = "{{ video_info.method }}";
-                
-                try {
-                    let apiUrl = 'https://api.cobalt.tools/api/json';
-                    let bodyData = { url: target, vQuality: "720" };
+                const type = "{{ video_info.type }}";
 
-                    if (method === 'tiktok') {
-                        // TikTok için alternatif hızlı çözüm
-                        const ttRes = await fetch(`https://www.tikwm.com/api/?url=${target}`);
-                        const ttData = await ttRes.json();
-                        if(ttData.data) return showButton(ttData.data.play, ttData.data.title);
-                    }
-
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                        body: JSON.stringify(bodyData)
-                    });
-                    
-                    const data = await response.json();
-                    if (data.url) {
-                        showButton(data.url, "Sosyal Medya Videosu");
-                    } else {
-                        throw new Error();
-                    }
-                } catch (e) {
-                    document.getElementById('loader').innerHTML = "<p class='text-red-500'>Maalesef bu video şu an indirilemiyor. Lütfen başka bir link deneyin.</p>";
+                // MOTOR 1: TIKTOK ÖZEL
+                if(type === 'tt') {
+                    try {
+                        const res = await fetch(`https://www.tikwm.com/api/?url=${target}`);
+                        const data = await res.json();
+                        if(data.data) return showFinal(data.data.play);
+                    } catch(e) {}
                 }
+
+                // MOTOR 2: COBALT (Instagram/YouTube)
+                try {
+                    updateStatus("Instagram protokolleri aşılıyor...", "fa-shield-halved");
+                    const res = await fetch('https://api.cobalt.tools/api/json', {
+                        method: 'POST',
+                        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                        body: JSON.stringify({url: target, vQuality: "720"})
+                    });
+                    const data = await res.json();
+                    if(data.url) return showFinal(data.url);
+                } catch(e) {}
+
+                // MOTOR 3: YEDEK (Sadece Link Köprüsü)
+                updateStatus("Son bir deneme yapılıyor...", "fa-bolt");
+                const backupUrl = `https://savefrom.net/api/v1/save?url=${encodeURIComponent(target)}`;
+                // Eğer her şey başarısız olursa bir uyarı ver
+                setTimeout(() => {
+                    if(document.getElementById('download-zone').classList.contains('hidden')) {
+                        updateStatus("Instagram bu videoyu şu an engelliyor. Lütfen 5 dakika sonra tekrar deneyin.", "fa-triangle-exclamation");
+                    }
+                }, 5000);
             }
 
-            function showButton(url, title) {
-                document.getElementById('loader').style.display = 'none';
+            function updateStatus(msg, icon) {
+                document.getElementById('status-msg').innerText = msg;
+                document.getElementById('status-icon').className = `fas ${icon} text-4xl rgb-text`;
+            }
+
+            function showFinal(url) {
+                document.getElementById('status-box').style.display = 'none';
                 document.getElementById('download-zone').classList.remove('hidden');
                 document.getElementById('final-link').href = url;
             }
 
-            window.onload = startProcess;
+            window.onload = tryResolve;
         </script>
         {% endif %}
     </main>

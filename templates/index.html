@@ -3,73 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hemenİndir.io | TikTok Tarzı İndirici</title>
+    <title>Hemenİndir.io | Profesyonel Medya İndirici</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Outfit', sans-serif; background-color: #0b0b0b; color: #fff; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .tiktok-card { max-width: 400px; width: 100%; margin-top: 2rem; border-radius: 2rem; overflow: hidden; animation: slideUp 0.5s ease; }
-        .download-btn { background: #fe2c55; transition: 0.3s; } /* TikTok Kırmızısı */
-        .download-btn:hover { background: #ef2950; transform: scale(1.02); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        body { font-family: 'Outfit', sans-serif; background-color: #05070a; color: #ffffff; }
+        .glass-panel { background: rgba(13, 17, 23, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+        .text-gradient { background: linear-gradient(to right, #4facfe, #00f2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .input-area { background: #161b22; border: 1px solid #30363d; }
+        .input-area:focus-within { border-color: #58a6ff; }
+        .blue-btn { background: #2f81f7; transition: 0.2s; }
+        .blue-btn:hover { background: #4493f8; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center px-4 py-12">
+<body class="min-h-screen flex flex-col items-center justify-center px-4">
 
-    <div class="mb-10 text-center">
-        <h1 class="text-3xl font-extrabold tracking-tighter italic">HEMENİNDİR<span class="text-red-500">.io</span></h1>
+    <div class="absolute top-8 left-8 flex items-center gap-2">
+        <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white text-sm">Hİ</div>
+        <span class="text-lg font-bold tracking-tight uppercase">HEMENİNDİR<span class="text-blue-500">.io</span></span>
     </div>
 
-    <div class="glass w-full max-w-lg p-2 rounded-full flex items-center pr-2">
-        <input type="url" name="url" id="urlInput" placeholder="Bağlantıyı buraya yapıştır..." 
-            class="bg-transparent flex-grow py-3 px-6 outline-none text-white text-lg">
-        <button onclick="document.getElementById('mainForm').submit()" class="download-btn px-6 py-3 rounded-full font-bold">
-            <i class="fa-solid fa-arrow-down"></i>
-        </button>
-    </div>
+    <main class="w-full max-w-4xl flex flex-col items-center">
+        <h1 class="text-5xl md:text-7xl font-extrabold text-center mb-4 tracking-tight">
+            Her Şeyi <span class="text-blue-500">Anında</span> İndir.
+        </h1>
+        <p class="text-gray-400 text-center mb-12 text-lg max-w-xl">
+            TikTok, Instagram ve YouTube... Linkini yapıştır, filigransız ve en yüksek kalitede saniyeler içinde cihazına kaydet.
+        </p>
 
-    <form id="mainForm" method="POST" action="/" class="hidden">
-        <input type="url" name="url" id="hiddenUrl">
-    </form>
-    <script>
-        document.getElementById('urlInput').addEventListener('input', (e) => {
-            document.getElementById('hiddenUrl').value = e.target.value;
-        });
-    </script>
-
-    {% if video_info %}
-    <div class="tiktok-card glass flex flex-col">
-        <div class="relative aspect-[9/16] bg-black">
-            <img src="{{ video_info.thumb }}" class="w-full h-full object-cover opacity-80">
-            <div class="absolute inset-0 flex items-center justify-center">
-                <i class="fa-solid fa-play text-6xl opacity-50"></i>
-            </div>
-        </div>
-        
-        <div class="p-6 text-center">
-            <div class="flex items-center justify-center gap-2 mb-2">
-                <span class="text-xs font-bold uppercase tracking-widest text-red-500">{{ video_info.platform }}</span>
-            </div>
-            <h2 class="text-lg font-semibold mb-6 line-clamp-2">{{ video_info.title }}</h2>
+        <div class="glass-panel w-full max-w-2xl rounded-[2rem] p-8 md:p-10">
             
-            <a href="/proxy_download?url={{ video_info.url | urlencode }}&title={{ video_info.title | urlencode }}" 
-               class="download-btn w-full block py-4 rounded-xl font-extrabold text-lg shadow-lg">
-               <i class="fa-solid fa-download mr-2"></i> VİDEOYU İNDİR
-            </a>
+            {% if error_message %}
+            <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-6 py-3 rounded-xl mb-6 flex items-center justify-center gap-2 text-sm">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>{{ error_message }}</span>
+            </div>
+            {% endif %}
+
+            <form method="POST" action="/" class="flex flex-col md:flex-row gap-3">
+                <div class="input-area flex-grow flex items-center rounded-xl px-4 py-3">
+                    <i class="fa-solid fa-link text-gray-500 mr-3"></i>
+                    <input type="url" name="url" placeholder="Video bağlantısını buraya yapıştırın..." required
+                        class="bg-transparent w-full outline-none text-white">
+                </div>
+                <button type="submit" class="blue-btn px-10 py-3 rounded-xl font-bold text-white">
+                    İndir
+                </button>
+            </form>
         </div>
-    </div>
-    {% endif %}
 
-    {% if error_message %}
-    <div class="mt-8 text-red-500 font-medium bg-red-500/10 px-6 py-3 rounded-full border border-red-500/20">
-        {{ error_message }}
-    </div>
-    {% endif %}
+        {% if video_info %}
+        <div class="glass-panel w-full max-w-2xl mt-6 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 border-blue-500/20 border">
+            <img src="{{ video_info.thumb }}" class="w-24 h-24 rounded-lg object-cover">
+            <div class="flex-grow text-center md:text-left">
+                <h2 class="text-lg font-semibold mb-4">{{ video_info.title }}</h2>
+                <a href="/proxy_download?url={{ video_info.url | urlencode }}&title={{ video_info.title | urlencode }}" 
+                   class="blue-btn inline-block px-8 py-2 rounded-lg font-bold text-sm">
+                   CİHAZA KAYDET
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </main>
 
-    <footer class="mt-auto pt-10 text-gray-500 text-xs">
-        &copy; 2026 İlker Ortak — Sakarya Adapazarı 🚀
+    <footer class="mt-20 text-gray-600 text-xs font-medium uppercase tracking-widest">
+        &copy; 2026 Hemenİndir.io — İlker Ortak
     </footer>
 
 </body>

@@ -4,7 +4,7 @@ import os
 import requests
 
 app = Flask(__name__)
-app.secret_key = 'ilker_sakarya_54_kesin_cozum'
+app.secret_key = 'ilker_sakarya_54_final'
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -12,28 +12,26 @@ def index():
         url = request.form.get('url')
         
         if not url:
-            session['error_message'] = "Lütfen bir bağlantı girin."
+            session['error_message'] = "Lütfen bir link girin."
         else:
-            # 1. YÖNTEM: TikTok API'si (En Garanti Yol)
+            # TIKTOK ÖZEL ÇÖZÜM
             if "tiktok.com" in url:
                 try:
-                    # TikTok için ücretsiz bir API köprüsü kullanıyoruz
                     api_url = f"https://www.tikwm.com/api/?url={url}"
                     response = requests.get(api_url).json()
-                    
                     if response.get('code') == 0:
                         data = response.get('data')
                         session['video_info'] = {
                             'title': data.get('title', 'TikTok Videosu'),
-                            'url': data.get('play'), # Filigransız video linki
+                            'url': data.get('play'), # Filigransız video
                         }
                         session.pop('error_message', None)
                     else:
-                        session['error_message'] = "TikTok videosu şu an indirilemiyor."
-                except Exception as e:
-                    session['error_message'] = "API bağlantı hatası oluştu."
+                        session['error_message'] = "TikTok videosu alınamadı."
+                except:
+                    session['error_message'] = "Servis şu an meşgul."
             
-            # 2. YÖNTEM: Diğer Platformlar İçin yt-dlp
+            # DİĞER PLATFORMLAR
             else:
                 try:
                     ydl_opts = {
@@ -46,7 +44,7 @@ def index():
                         info = ydl.extract_info(url, download=False)
                         if info:
                             session['video_info'] = {
-                                'title': info.get('title', 'Video Çözüldü'),
+                                'title': info.get('title', 'Video Hazır'),
                                 'url': info.get('url'),
                             }
                             session.pop('error_message', None)

@@ -51,67 +51,65 @@
         <div class="glass-panel w-full max-w-2xl mt-8 rounded-2xl p-8 border border-blue-500/20 text-center">
             <div id="status-box">
                 <i id="status-icon" class="fas fa-circle-notch fa-spin text-4xl rgb-text"></i>
-                <p id="status-msg" class="mt-4 text-gray-400">Video motoru hazırlanıyor...</p>
+                <p id="status-msg" class="mt-4 text-gray-400">İçerik hazırlanıyor...</p>
             </div>
             
             <div id="download-zone" class="hidden">
-                <span class="text-[10px] font-black uppercase tracking-widest rgb-text border border-blue-500/20 px-2 py-1 rounded">Hazır</span>
-                <h2 class="text-xl font-bold mt-4 mb-6 italic">Video Başarıyla Çözüldü!</h2>
+                <span class="text-[10px] font-black uppercase tracking-widest rgb-text border border-blue-500/20 px-2 py-1 rounded">{{ video_info.platform }}</span>
+                <h2 class="text-xl font-bold mt-4 mb-6 italic" id="final-title">İndirmeye Hazır!</h2>
                 <a id="final-link" href="#" target="_blank" class="rgb-bg inline-block px-14 py-4 font-extrabold text-md rounded-xl shadow-lg shadow-blue-500/30">
-                   VİDEOYU CİHAZA KAYDET
+                   VİDEOYU KAYDET
                 </a>
             </div>
         </div>
 
         <script>
-            async function tryResolve() {
+            async function resolve() {
+                const method = "{{ video_info.method }}";
                 const target = "{{ video_info.target_url }}";
-                const type = "{{ video_info.type }}";
+                const direct = "{{ video_info.url }}";
 
-                // MOTOR 1: TIKTOK ÖZEL
-                if(type === 'tt') {
+                // 1. DOĞRUDAN SUNUCUDAN GELEN (YouTube için)
+                if(method === 'direct') {
+                    showFinal(direct, "YouTube Videosu");
+                    return;
+                }
+
+                // 2. TIKTOK ÖZEL
+                if(method === 'js_tiktok') {
                     try {
                         const res = await fetch(`https://www.tikwm.com/api/?url=${target}`);
                         const data = await res.json();
-                        if(data.data) return showFinal(data.data.play);
+                        if(data.data) return showFinal(data.data.play, data.data.title);
                     } catch(e) {}
                 }
 
-                // MOTOR 2: COBALT (Instagram/YouTube)
-                try {
-                    updateStatus("Instagram protokolleri aşılıyor...", "fa-shield-halved");
-                    const res = await fetch('https://api.cobalt.tools/api/json', {
-                        method: 'POST',
-                        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-                        body: JSON.stringify({url: target, vQuality: "720"})
-                    });
-                    const data = await res.json();
-                    if(data.url) return showFinal(data.url);
-                } catch(e) {}
+                // 3. INSTAGRAM (JS Köprüsü)
+                if(method === 'js_cobalt') {
+                    try {
+                        const res = await fetch('https://api.cobalt.tools/api/json', {
+                            method: 'POST',
+                            headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                            body: JSON.stringify({url: target, vQuality: "720"})
+                        });
+                        const data = await response.json();
+                        if(data.url) return showFinal(data.url, "Instagram İçeriği");
+                    } catch(e) {}
+                }
 
-                // MOTOR 3: YEDEK (Sadece Link Köprüsü)
-                updateStatus("Son bir deneme yapılıyor...", "fa-bolt");
-                const backupUrl = `https://savefrom.net/api/v1/save?url=${encodeURIComponent(target)}`;
-                // Eğer her şey başarısız olursa bir uyarı ver
-                setTimeout(() => {
-                    if(document.getElementById('download-zone').classList.contains('hidden')) {
-                        updateStatus("Instagram bu videoyu şu an engelliyor. Lütfen 5 dakika sonra tekrar deneyin.", "fa-triangle-exclamation");
-                    }
-                }, 5000);
+                // HATA DURUMU
+                document.getElementById('status-msg').innerHTML = "<span class='text-red-400'>Bu link şu an işlenemiyor. Lütfen linkin doğru ve herkese açık olduğundan emin olun.</span>";
+                document.getElementById('status-icon').className = "fas fa-triangle-exclamation text-red-500 text-4xl";
             }
 
-            function updateStatus(msg, icon) {
-                document.getElementById('status-msg').innerText = msg;
-                document.getElementById('status-icon').className = `fas ${icon} text-4xl rgb-text`;
-            }
-
-            function showFinal(url) {
+            function showFinal(url, title) {
                 document.getElementById('status-box').style.display = 'none';
                 document.getElementById('download-zone').classList.remove('hidden');
                 document.getElementById('final-link').href = url;
+                if(title) document.getElementById('final-title').innerText = title;
             }
 
-            window.onload = tryResolve;
+            window.onload = resolve;
         </script>
         {% endif %}
     </main>

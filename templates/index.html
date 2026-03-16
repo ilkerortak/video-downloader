@@ -8,64 +8,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --rgb-gradient: linear-gradient(90deg, #2f81f7, #00d2ff, #2f81f7);
-        }
-
-        body { 
-            font-family: 'Outfit', sans-serif; 
-            background-color: #05070a; 
-            color: #ffffff; 
-            transition: background-color 0.3s ease;
-        }
-
-        /* Akıcı Mavi RGB Efekti (Yazılar ve Kenarlıklar İçin) */
-        .rgb-text {
-            background: var(--rgb-gradient);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 3s linear infinite;
-        }
-
-        .rgb-bg {
-            background: var(--rgb-gradient);
-            background-size: 200% auto;
-            animation: shine 3s linear infinite;
-        }
-
-        .rgb-border:focus-within {
-            border-image: var(--rgb-gradient) 1;
-            box-shadow: 0 0 15px rgba(47, 129, 247, 0.4);
-        }
-
+        :root { --rgb-gradient: linear-gradient(90deg, #2f81f7, #00d2ff, #2f81f7); }
+        body { font-family: 'Outfit', sans-serif; background-color: #05070a; color: #ffffff; }
+        .rgb-text { background: var(--rgb-gradient); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
+        .rgb-bg { background: var(--rgb-gradient); background-size: 200% auto; animation: shine 3s linear infinite; }
+        .rgb-border:focus-within { border-image: var(--rgb-gradient) 1; box-shadow: 0 0 15px rgba(47, 129, 247, 0.4); }
         @keyframes shine { to { background-position: 200% center; } }
-
-        .glass-panel { 
-            background: rgba(13, 17, 23, 0.85); 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(12px); 
-        }
-
-        .input-area { 
-            background: #161b22; 
-            border: 1px solid #30363d; 
-            border-radius: 0.75rem; 
-            transition: 0.3s; 
-        }
-
-        /* Gece/Gündüz Modu İçin Ufak Bir Ayar (Opsiyonel) */
-        @media (prefers-color-scheme: light) {
-            .light-mode-active body { background-color: #f0f2f5; color: #1c1e21; }
-            .light-mode-active .glass-panel { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0,0,0,0.1); }
-            .light-mode-active .input-area { background: #ffffff; border: 1px solid #ddd; color: #000; }
-        }
+        .glass-panel { background: rgba(13, 17, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); }
+        .input-area { background: #161b22; border: 1px solid #30363d; border-radius: 0.75rem; transition: 0.3s; }
+        .description-text { color: #d1d5db; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center px-4">
 
     <div class="absolute top-8 left-8 flex items-center gap-2">
-        <div class="w-9 h-9 rounded-lg rgb-bg flex items-center justify-center font-bold text-white text-sm shadow-lg shadow-blue-500/20">Hİ</div>
+        <div class="w-9 h-9 rounded-lg rgb-bg flex items-center justify-center font-bold text-white text-sm">Hİ</div>
         <span class="text-lg font-bold tracking-tight uppercase">HEMENİNDİR<span class="rgb-text">.io</span></span>
     </div>
 
@@ -73,45 +30,87 @@
         <h1 class="text-5xl md:text-7xl font-extrabold text-center mb-4 tracking-tight">
             Her Şeyi <span class="rgb-text">Anında</span> İndir.
         </h1>
-        <p class="text-gray-400 text-center mb-12 text-lg max-w-xl">
-            Instagram Reels, TikTok ve daha fazlası... <span class="rgb-text font-semibold">Hızlı</span> ve tamamen ücretsiz.
+        <p class="description-text text-center mb-12 text-lg max-w-2xl font-light">
+            Tiktok ınstagram ve youtube ... linkini yapıştır filigransız ve en yüksek kalitede saniyeler içinde cihazına kaydet.
         </p>
 
         <div class="glass-panel w-full max-w-2xl rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
             <form method="POST" action="/" class="flex flex-col md:flex-row gap-3">
                 <div class="input-area flex-grow flex items-center px-4 py-3 rgb-border">
-                    <i class="fa-solid fa-link text-gray-500 mr-3"></i>
+                    <i class="fa-solid fa-link text-gray-400 mr-3"></i>
                     <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required
                         class="bg-transparent w-full outline-none text-white text-base placeholder-gray-600">
                 </div>
-                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white flex items-center justify-center gap-2 rounded-xl hover:scale-105 transition-transform shadow-lg shadow-blue-500/20">
+                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white flex items-center justify-center gap-2 rounded-xl hover:scale-105 transition-transform">
                     <i class="fa-solid fa-bolt"></i> İndir
                 </button>
             </form>
         </div>
 
         {% if video_info %}
-        <div class="glass-panel w-full max-w-2xl mt-8 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 border border-blue-500/30">
-            <div class="w-24 h-24 bg-gray-800 rounded-xl overflow-hidden flex items-center justify-center ring-2 ring-blue-500/20">
-                <img src="{{ video_info.thumb }}" class="w-full h-full object-cover">
+        <div class="glass-panel w-full max-w-2xl mt-8 rounded-2xl p-8 border border-blue-500/20 text-center">
+            <div id="loader">
+                <i class="fas fa-circle-notch fa-spin text-4xl rgb-text"></i>
+                <p class="mt-4 text-gray-400">Video hazırlanıyor, lütfen bekleyin...</p>
             </div>
-            <div class="flex-grow text-center md:text-left">
+            
+            <div id="download-zone" class="hidden">
                 <span class="text-[10px] font-black uppercase tracking-widest rgb-text border border-blue-500/20 px-2 py-1 rounded">
-                    {{ video_info.platform }} Hazır
+                    {{ video_info.platform }} ANALİZ EDİLDİ
                 </span>
-                <h2 class="text-lg font-semibold mt-2 mb-4 line-clamp-1 italic text-gray-200">"{{ video_info.title }}"</h2>
-                <a href="/proxy_download?url={{ video_info.url | urlencode }}&title={{ video_info.title | urlencode }}" 
-                   class="rgb-bg inline-block px-12 py-3 font-bold text-sm rounded-xl shadow-lg shadow-blue-500/30 active:scale-95 transition-all">
-                   VİDEOYU KAYDET
+                <h2 class="text-xl font-bold mt-4 mb-6 italic" id="video-title">İçerik İndirmeye Hazır!</h2>
+                <a id="final-link" href="#" download class="rgb-bg inline-block px-14 py-4 font-extrabold text-md rounded-xl shadow-lg shadow-blue-500/30 hover:scale-105 transition-all">
+                   <i class="fa-solid fa-cloud-arrow-down mr-2"></i> CİHAZA KAYDET
                 </a>
             </div>
         </div>
+
+        <script>
+            async function startProcess() {
+                const target = "{{ video_info.target_url }}";
+                const method = "{{ video_info.method }}";
+                
+                try {
+                    let apiUrl = 'https://api.cobalt.tools/api/json';
+                    let bodyData = { url: target, vQuality: "720" };
+
+                    if (method === 'tiktok') {
+                        // TikTok için alternatif hızlı çözüm
+                        const ttRes = await fetch(`https://www.tikwm.com/api/?url=${target}`);
+                        const ttData = await ttRes.json();
+                        if(ttData.data) return showButton(ttData.data.play, ttData.data.title);
+                    }
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                        body: JSON.stringify(bodyData)
+                    });
+                    
+                    const data = await response.json();
+                    if (data.url) {
+                        showButton(data.url, "Sosyal Medya Videosu");
+                    } else {
+                        throw new Error();
+                    }
+                } catch (e) {
+                    document.getElementById('loader').innerHTML = "<p class='text-red-500'>Maalesef bu video şu an indirilemiyor. Lütfen başka bir link deneyin.</p>";
+                }
+            }
+
+            function showButton(url, title) {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('download-zone').classList.remove('hidden');
+                document.getElementById('final-link').href = url;
+            }
+
+            window.onload = startProcess;
+        </script>
         {% endif %}
     </main>
 
     <footer class="mt-20 text-gray-600 text-[10px] font-bold uppercase tracking-[0.3em]">
         &copy; 2026 Hemenİndir.io — <span class="rgb-text">İlker Ortak</span>
     </footer>
-
 </body>
 </html>

@@ -3,7 +3,7 @@ import yt_dlp
 import os
 
 app = Flask(__name__)
-app.secret_key = 'ilker_sakarya_54'
+app.secret_key = 'ilker_sakarya_54_ozel'
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -11,45 +11,51 @@ def index():
         url = request.form.get('url')
         
         if not url:
-            session['error_message'] = "Lütfen bir link girin."
+            session['error_message'] = "Lütfen bir bağlantı girin."
         else:
             try:
+                # TikTok'un en güncel engellerini aşmak için ayarlar
                 ydl_opts = {
                     'quiet': True,
                     'no_warnings': True,
                     'format': 'best',
                     'noplaylist': True,
                     'nocheckcertificate': True,
-                    'geo_bypass': True,
+                    # Çerez dosyası varsa kullan
                     'cookiefile': 'cookies.txt' if os.path.exists('cookies.txt') else None,
-                    # TikTok'un WAF (Güvenlik Duvarı) sistemini geçmeye yönelik ayarlar
+                    # TikTok'u gerçek bir cihaz olduğuna ikna etmek için:
+                    'http_headers': {
+                        'User-Agent': 'com.zhiliaoapp.musically/2023301040 (Linux; U; Android 10; tr_TR; Samsung SM-G973N; Build/QP1A.190711.020; Cronet/58.0.2991.0)',
+                        'Accept': '*/*',
+                        'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
+                    },
                     'extractor_args': {
                         'tiktok': {
                             'app_version': '33.1.4',
                             'manifest_app_version': '33.1.4',
                         }
-                    },
-                    'http_headers': {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-                        'Accept': '*/*',
-                        'Accept-Language': 'en-US,en;q=0.9',
-                    },
+                    }
                 }
                 
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     info = ydl.extract_info(url, download=False)
                     if info:
+                        video_url = info.get('url')
+                        # Eğer direkt URL yoksa formatlardan en iyisini seç
+                        if not video_url and 'formats' in info:
+                            video_url = info['formats'][-1].get('url')
+                            
                         session['video_info'] = {
-                            'title': info.get('title', 'Video'),
-                            'url': info.get('url'),
+                            'title': info.get('title', 'Video Başarıla Çözüldü'),
+                            'url': video_url,
                         }
                         session.pop('error_message', None)
             except Exception as e:
-                print(f"Hata: {e}")
+                print(f"Hata Detayı: {e}")
                 if "403" in str(e):
-                    session['error_message'] = "TikTok sunucu IP'mizi engelledi. Başka bir video deneyin veya biraz bekleyin."
+                    session['error_message'] = "TikTok şu an sunucu IP'sini engelliyor. Lütfen 5 dk sonra tekrar deneyin."
                 else:
-                    session['error_message'] = "Bağlantı analiz edilemedi."
+                    session['error_message'] = "Video bilgileri alınamadı."
                 session.pop('video_info', None)
         
         return redirect(url_for('index'))

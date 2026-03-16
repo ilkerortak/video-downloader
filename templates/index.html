@@ -3,105 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hemenİndir.io | Medya Merkezi</title>
+    <title>Hemenİndir.io | Premium V2.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --rgb-gradient: linear-gradient(90deg, #2f81f7, #00d2ff, #2f81f7); }
-        body { font-family: 'Outfit', sans-serif; background-color: #05070a; color: #ffffff; }
-        .rgb-text { background: var(--rgb-gradient); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
-        .rgb-bg { background: var(--rgb-gradient); background-size: 200% auto; animation: shine 3s linear infinite; }
+        :root { --p-color: #00d2ff; --s-color: #3a7bd5; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020406; color: #fff; overflow-x: hidden; }
+        
+        /* Neon Background */
+        .neon-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 50%, #101827 0%, #020406 100%); }
+        .neon-sphere { position: absolute; width: 400px; height: 400px; background: var(--s-color); filter: blur(150px); opacity: 0.15; border-radius: 50%; animation: float 10s infinite alternate; }
+
+        @keyframes float { from { transform: translate(-10%, -10%); } to { transform: translate(10%, 10%); } }
+
+        .rgb-glow { background: linear-gradient(90deg, #00d2ff, #3a7bd5, #00d2ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
+        .rgb-btn { background: linear-gradient(90deg, #00d2ff, #3a7bd5, #00d2ff); background-size: 200% auto; animation: shine 3s linear infinite; transition: 0.4s; }
         @keyframes shine { to { background-position: 200% center; } }
-        .glass-panel { background: rgba(13, 17, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); }
-        .rgb-border:focus-within { border-image: var(--rgb-gradient) 1; box-shadow: 0 0 15px rgba(47, 129, 247, 0.4); }
+
+        .premium-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px); border-radius: 2.5rem; }
+        .premium-input { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1.2rem; transition: 0.3s; }
+        .premium-input:focus-within { border-color: var(--p-color); box-shadow: 0 0 20px rgba(0, 210, 255, 0.2); }
+
+        .loading-bar-inner { background: linear-gradient(90deg, #00d2ff, #3a7bd5); box-shadow: 0 0 15px #00d2ff; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center px-4">
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
+    <div class="neon-bg"><div class="neon-sphere"></div></div>
 
-    <div class="absolute top-8 left-8 flex items-center gap-2">
-        <div class="w-9 h-9 rounded-lg rgb-bg flex items-center justify-center font-bold text-white shadow-lg">Hİ</div>
-        <span class="text-lg font-bold tracking-tight uppercase">HEMENİNDİR<span class="rgb-text">.io</span></span>
-    </div>
+    <nav class="absolute top-10 flex items-center gap-3">
+        <div class="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-bold tracking-[0.2em] text-blue-400">PREMIUM V2.0</div>
+    </nav>
 
-    <main class="w-full max-w-4xl text-center">
-        <div id="ui-content">
-            <h1 class="text-5xl md:text-6xl font-extrabold mb-10 tracking-tight leading-tight">Medyayı <span class="rgb-text">Analiz Et.</span></h1>
-            
-            <div class="glass-panel w-full max-w-2xl mx-auto rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
-                <form method="POST" action="/" onsubmit="startLoading()">
+    <main class="w-full max-w-3xl">
+        <div id="main-content">
+            <h1 class="text-6xl md:text-8xl font-extrabold text-center mb-4 tracking-tighter">
+                Hemen<span class="rgb-glow italic">İndir</span>
+            </h1>
+            <p class="text-center text-gray-400 mb-12 font-medium tracking-wide">YÜKSEK KALİTE MEDYA DÖNÜŞTÜRÜCÜ</p>
+
+            <div class="premium-card p-2 md:p-3 shadow-2xl">
+                <form method="POST" action="/" onsubmit="startV2()" class="flex flex-col md:flex-row gap-2">
                     <input type="hidden" name="action" value="info">
-                    <div class="bg-[#161b22] border border-[#30363d] rounded-xl flex items-center px-5 py-4 rgb-border mb-4">
-                        <i class="fa-solid fa-link text-gray-500 mr-3"></i>
-                        <input type="url" name="url" placeholder="Video bağlantısını yapıştır..." required class="bg-transparent w-full outline-none text-white text-base">
+                    <div class="premium-input flex-grow flex items-center px-6 py-5">
+                        <i class="fa-solid fa-bolt-lightning text-blue-400 mr-4"></i>
+                        <input type="url" name="url" placeholder="URL Adresini buraya uçur..." required class="bg-transparent w-full outline-none text-white font-bold">
                     </div>
-                    <button type="submit" class="rgb-bg w-full py-4 font-bold text-white rounded-2xl hover:scale-[1.02] active:scale-95 transition-all">VİDEOYU BUL</button>
+                    <button type="submit" class="rgb-btn px-12 py-5 rounded-xl font-black text-white uppercase tracking-widest hover:scale-105 active:scale-95 shadow-xl shadow-blue-500/20">
+                        ANALİZ ET
+                    </button>
                 </form>
             </div>
         </div>
 
         {% if preview %}
-        <div id="preview-section" class="mt-10 glass-panel w-full max-w-xl mx-auto rounded-3xl p-6 border border-blue-500/20 shadow-2xl animate-fade-in">
-            <img src="{{ preview.thumb }}" class="w-full h-52 object-cover rounded-2xl mb-4 border border-white/10">
-            <h3 class="text-lg font-bold mb-6 italic text-gray-200 px-2 line-clamp-2">{{ preview.title }}</h3>
-            
-            <div class="grid grid-cols-2 gap-4">
-                <form method="POST" onsubmit="startLoading()">
-                    <input type="hidden" name="url" value="{{ preview.url }}">
-                    <input type="hidden" name="action" value="video">
-                    <button type="submit" class="w-full bg-gray-800 hover:bg-gray-700 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors">
-                        <i class="fa-solid fa-video"></i> MP4
-                    </button>
-                </form>
-                <form method="POST" onsubmit="startLoading()">
-                    <input type="hidden" name="url" value="{{ preview.url }}">
-                    <input type="hidden" name="action" value="mp3">
-                    <button type="submit" class="w-full rgb-bg py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-transform hover:scale-105">
-                        <i class="fa-solid fa-music"></i> MP3
-                    </button>
-                </form>
+        <div class="mt-8 premium-card p-6 border-t-2 border-blue-500/30 animate-in fade-in zoom-in duration-500">
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+                <img src="{{ preview.thumb }}" class="w-full md:w-48 h-32 object-cover rounded-2xl shadow-2xl">
+                <div class="flex-grow text-center md:text-left">
+                    <h3 class="text-xl font-bold mb-4 italic truncate max-w-sm">{{ preview.title }}</h3>
+                    <div class="flex gap-3">
+                        <form method="POST" onsubmit="startV2()" class="w-full">
+                            <input type="hidden" name="url" value="{{ preview.url }}">
+                            <input type="hidden" name="action" value="video">
+                            <button class="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
+                                <i class="fa-solid fa-video"></i> MP4
+                            </button>
+                        </form>
+                        <form method="POST" onsubmit="startV2()" class="w-full">
+                            <input type="hidden" name="url" value="{{ preview.url }}">
+                            <input type="hidden" name="action" value="mp3">
+                            <button class="w-full rgb-btn py-3 rounded-xl font-bold flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-music"></i> MP3
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
         {% endif %}
 
         {% if error %}
-        <p class="mt-6 text-red-500 font-bold"><i class="fa-solid fa-circle-exclamation mr-2"></i>{{ error }}</p>
+        <div class="mt-6 text-red-400 text-center font-bold bg-red-500/10 py-3 rounded-xl border border-red-500/20">
+            <i class="fa-solid fa-triangle-exclamation mr-2"></i> {{ error }}
+        </div>
         {% endif %}
 
-        <div id="loading-bar" class="hidden mt-12 w-full max-w-md mx-auto">
-            <div class="w-full bg-gray-900 rounded-full h-3 overflow-hidden p-[px] border border-white/5">
-                <div id="progress" class="rgb-bg h-full rounded-full w-0 transition-all duration-300"></div>
+        <div id="v2-loader" class="hidden mt-16 text-center">
+            <div class="w-full max-w-sm mx-auto h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div id="v2-progress" class="loading-bar-inner h-full w-0 transition-all duration-300"></div>
             </div>
-            <p id="loading-text" class="mt-4 rgb-text font-black tracking-widest animate-pulse uppercase text-sm">İŞLEM YAPILIYOR...</p>
+            <p class="mt-6 text-xs font-black tracking-[0.5em] text-blue-400 animate-pulse uppercase">Veri Akışı Sağlanıyor</p>
         </div>
     </main>
 
-    <footer class="mt-20 text-gray-600 text-[10px] font-bold uppercase tracking-[0.4em]">
-        &copy; 2026 Hemenİndir.io — <span class="rgb-text">İlker Ortak</span>
+    <footer class="mt-24 text-center">
+        <p class="text-[10px] font-black tracking-[0.6em] text-gray-600">BY <span class="rgb-glow">İLKER ORTAK</span> — 2026</p>
     </footer>
 
     <script>
-        function startLoading() {
-            const bar = document.getElementById('loading-bar');
-            const progress = document.getElementById('progress');
-            const text = document.getElementById('loading-text');
-            
-            bar.classList.remove('hidden');
-            let width = 0;
-            
-            const interval = setInterval(() => {
-                width += (95 - width) * 0.1;
-                progress.style.width = width + '%';
-                if(width > 94) clearInterval(interval);
-            }, 600);
-
-            // Akıllı Kapatma: İndirme başladığında tarayıcı odağı değişir. 
-            // Kullanıcı tekrar sayfaya baktığında barı temizle.
-            window.onfocus = function() {
+        function startV2() {
+            document.getElementById('v2-loader').classList.remove('hidden');
+            let w = 0;
+            const iv = setInterval(() => {
+                w += (98 - w) * 0.05;
+                document.getElementById('v2-progress').style.width = w + '%';
+                if(w > 97) clearInterval(iv);
+            }, 500);
+            window.onfocus = () => {
                 setTimeout(() => {
-                    bar.classList.add('hidden');
-                    progress.style.width = '0%';
-                }, 1500);
+                    document.getElementById('v2-loader').classList.add('hidden');
+                    document.getElementById('v2-progress').style.width = '0%';
+                }, 1000);
             };
         }
     </script>

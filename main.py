@@ -2,11 +2,10 @@ import os, yt_dlp, tempfile
 from flask import Flask, render_template, request, redirect, url_for, session, send_file
 
 app = Flask(__name__)
-app.secret_key = "ilker_final_fix_54"
+app.secret_key = "ilker_ortak_sakarya_54"
 
 def download_media(url, mode='video'):
     temp_dir = tempfile.gettempdir()
-    # Dosya ismini temiz tutmak için rastgele bir isim yerine başlığı alıyoruz
     ydl_opts = {
         'outtmpl': os.path.join(temp_dir, '%(title)s.%(ext)s'),
         'quiet': True,
@@ -23,21 +22,20 @@ def download_media(url, mode='video'):
             }],
         })
     else:
-        ydl_opts['format'] = 'best'
+        ydl_opts['format'] = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
-            filename = ydl.prepare_filename(info)
+            original_file = ydl.prepare_filename(info)
             
-            # Eğer MP3 modu seçildiyse uzantıyı zorla .mp3 yap
             if mode == 'mp3':
-                # yt-dlp uzantıyı değiştirdiği için biz de kontrol ediyoruz
-                actual_mp3 = os.path.splitext(filename)[0] + ".mp3"
+                # Dosya uzantısını ne olursa olsun .mp3'e zorla
+                actual_mp3 = os.path.splitext(original_file)[0] + ".mp3"
                 return actual_mp3
-            return filename
+            return original_file
     except Exception as e:
-        print(f"Hata: {e}")
+        print(f"Hata detayı: {e}")
         return None
 
 @app.route('/', methods=['GET', 'POST'])
@@ -49,14 +47,13 @@ def index():
         if url:
             filepath = download_media(url, mode=action)
             if filepath and os.path.exists(filepath):
-                # Dosya adını güvenli bir şekilde gönderelim
+                # download_name kullanarak tarayıcıya dosya türünü net bildiriyoruz
                 return send_file(
                     filepath, 
                     as_attachment=True, 
                     download_name=os.path.basename(filepath)
                 )
-            session['error'] = "İndirme başarısız! Linki kontrol edin."
-            
+            session['error'] = "Dosya işlenemedi. Linki kontrol edip tekrar dene."
         return redirect(url_for('index'))
     
     error = session.pop('error', None)

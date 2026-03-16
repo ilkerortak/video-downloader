@@ -40,7 +40,7 @@
             <span class="text-lg font-bold tracking-tight uppercase">HEMENİNDİR<span class="rgb-text">.io</span></span>
         </div>
         <button id="theme-toggle" class="text-xl hover:scale-110 transition-transform">
-            <i class="fa-solid fa-moon text-blue-400" id="theme-icon"></i>
+            <i class="fa-solid fa-sun text-orange-500" id="theme-icon"></i>
         </button>
     </div>
 
@@ -80,7 +80,7 @@
             <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
                 <div id="bar" class="rgb-bg h-full w-0 transition-all duration-300"></div>
             </div>
-            <p class="mt-4 text-[10px] rgb-text font-bold tracking-widest uppercase animate-pulse">Medya Sakarya'dan yola çıktı, geliyor...</p>
+            <p class="mt-4 text-[10px] rgb-text font-bold tracking-widest uppercase animate-pulse">Medya hazırlanıyor, lütfen bekleyin...</p>
         </div>
     </main>
 
@@ -96,17 +96,19 @@
             document.getElementById('m-mp3').classList.toggle('active-mode', mode === 'mp3');
         }
 
-        // Tema Değiştirici (Güneş / Hilal Ay)
+        // Tema Değiştirici (İkonlar tersine çevrildi)
         const themeBtn = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
         themeBtn.onclick = () => {
             document.body.classList.toggle('light-mode');
             if(document.body.classList.contains('light-mode')) {
-                themeIcon.classList.replace('fa-moon', 'fa-sun');
-                themeIcon.classList.replace('text-blue-400', 'text-orange-500');
-            } else {
+                // Gündüz modundayken: Ay ikonunu göster (Geceye geçmek için)
                 themeIcon.classList.replace('fa-sun', 'fa-moon');
                 themeIcon.classList.replace('text-orange-500', 'text-blue-400');
+            } else {
+                // Gece modundayken: Güneş ikonunu göster (Gündüze geçmek için)
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                themeIcon.classList.replace('text-blue-400', 'text-orange-500');
             }
         };
 

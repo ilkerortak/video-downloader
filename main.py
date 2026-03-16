@@ -21,11 +21,19 @@ def index():
                     'no_warnings': True,
                     'format': 'best',
                     'noplaylist': True,
-                    # --- KRİTİK ÇÖZÜM: Çerez dosyasını kullan ---
-                    'cookiefile': 'cookies.txt', 
-                    # --------------------------------------------
+                    # Çerez dosyasını mutlaka okumalı
+                    'cookiefile': 'cookies.txt',
+                    # TikTok'un mobil api'sini kullanmaya zorla
+                    'extractor_args': {
+                        'tiktok': {
+                            'web_proxy': True,
+                            'app_version': '33.1.4',
+                            'manifest_app_version': '33.1.4',
+                        }
+                    },
                     'http_headers': {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                        'User-Agent': 'com.zhiliaoapp.musically/2023301040 (Linux; U; Android 10; tr_TR; Samsung SM-G973N; Build/QP1A.190711.020; Cronet/58.0.2991.0)',
+                        'Accept-Language': 'tr-TR,tr;q=0.9',
                     },
                     'nocheckcertificate': True,
                     'geo_bypass': True,
@@ -34,14 +42,22 @@ def index():
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     info = ydl.extract_info(url, download=False)
                     if info:
+                        # TikTok bazen 'url' yerine 'formats' içinde link gönderir
+                        video_url = info.get('url')
+                        if not video_url and 'formats' in info:
+                            video_url = info['formats'][-1].get('url')
+                            
                         video_info = {
                             'title': info.get('title', 'Video'),
-                            'url': info.get('url'),
+                            'url': video_url,
                             'thumbnail': info.get('thumbnail')
                         }
             except Exception as e:
                 print(f"Hata Detayı: {e}")
-                error_message = "TikTok engeli aşılamadı. Lütfen çerez dosyasını güncelleyin veya linki kontrol edin."
+                if "403" in str(e):
+                    error_message = "TikTok sunucu erişimini reddetti. Farklı bir video linki deneyin veya çerez dosyasını tazeleyin."
+                else:
+                    error_message = "Video analiz edilemedi. Lütfen bağlantıyı kontrol edin."
 
     return render_template('index.html', video_info=video_info, error_message=error_message)
 

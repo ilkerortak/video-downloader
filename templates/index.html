@@ -1,0 +1,9 @@
+<form method="POST">
+    <input type="text" name="url" placeholder="Video linkini yapıştırın">
+    <button type="submit">Link Oluştur</button>
+</form>
+
+{% if video_info %}
+    <h3>{{ video_info.title }}</h3>
+    <a href="{{ video_info.url }}" target="_blank">Buraya Sağ Tıklayıp Farklı Kaydet Deyin</a>
+{% endif %}

@@ -3,63 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hemenİndir.io | Hızlı ve Temiz Video İndirici</title>
+    <title>Hemenİndir.io | Hızlı Video İndirici</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --p-blue: #3b82f6; --d-bg: #020617; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.5s ease; }
+        :root { --p-blue: #3b82f6; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.4s ease, color 0.4s ease; margin: 0; padding: 0; }
         
-        .dark-mode { background-color: var(--d-bg); color: #f8fafc; }
-        .light-mode { background-color: #f1f5f9; color: #0f172a; }
+        .dark-mode { background-color: #020617; color: #ffffff; }
+        .light-mode { background-color: #f8fafc; color: #0f172a; }
 
-        .glass-box {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 2.5rem;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
         }
-        .light-mode .glass-box {
+        .light-mode .glass-card {
             background: #ffffff;
             border: 1px solid rgba(0,0,0,0.05);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.03);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
         }
 
-        .input-field {
-            background: rgba(255, 255, 255, 0.03);
-            border: 2px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .input-field:focus {
-            border-color: var(--p-blue);
-            background: rgba(59, 130, 246, 0.05);
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
-        }
-
-        .cta-button {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        .input-style {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
         }
-        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); }
+        .light-mode .input-style {
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            color: #0f172a;
+        }
+        .input-style:focus {
+            border-color: var(--p-blue);
+            outline: none;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
 
-        .animate-reveal { animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes reveal { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-main {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-main:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade { animation: fadeInUp 0.6s ease forwards; }
     </style>
 </head>
 <body id="mainBody" class="min-h-screen flex flex-col dark-mode">
 
-    <header class="w-full max-w-6xl mx-auto p-8 flex justify-between items-center">
-        <div class="flex items-center gap-3 group cursor-default">
-            <div class="w-11 h-11 cta-button rounded-2xl flex items-center justify-center font-extrabold text-white text-xl shadow-lg">Hİ</div>
-            <h1 class="text-2xl font-extrabold tracking-tighter uppercase">Hemenİndir<span class="text-blue-500">.io</span></h1>
+    <nav class="w-full max-w-6xl mx-auto p-6 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 btn-main rounded-xl flex items-center justify-center font-extrabold text-white text-lg shadow-lg">Hİ</div>
+            <h1 class="text-xl font-black tracking-tighter uppercase">HEMENİNDİR<span class="text-blue-500">.io</span></h1>
         </div>
-        <button onclick="toggleTheme()" class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all active:scale-90">
+        <button onclick="toggleTheme()" class="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all">
             <span id="themeIcon">🌓</span>
         </button>
-    </header>
+    </nav>
 
-    <main class="flex-grow flex flex-col items-center justify-center px-6 py-12">
+    <main class="flex-grow flex flex-col items-center justify-center px-4 py-10">
         
-        <div class="w-full max-w-3xl text-center space-y-6 mb-12 animate-reveal">
-            <h
+        <div class="w-full max-w-3xl text-center mb-10 animate-fade">
+            <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+                Her Şeyi <span class="text-blue-500">Anında</span> İndir.
+            </h2>
+            <p class="text-gray-400 text-base md:text-lg max-w-lg mx-auto">
+                Linkini yapıştır ve saniyeler içinde indirmeye başla. Tamamen ücretsiz ve sınırsız.
+            </p>
+        </div>
+
+        <div class="w-full max-w-3xl glass-card p-6 md:p-10 animate-fade" style="animation-delay: 0.1s;">
+            
+            {% if error_message %}
+            <div class="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm text-center">
+                ⚠️ {{ error_message }}
+            </div>
+            {% endif %}
+
+            <form method="POST" id="downloadForm" class="flex flex-col md:flex-row gap-4">
+                <input type="text" name="url" placeholder="Video bağlantısını buraya bırakın..." required
+                    class="flex-grow px-6 py-4 input-style rounded-2xl text-lg">
+                
+                <button type="submit" id="submitBtn" 
+                    class="btn-main px-10 py-4 rounded-2xl font-bold text-white text-lg flex items-center justify-center min-w-[160px]">
+                    <span id="btnText">İndir</span>
+                    <div id="loaderIcon" class="hidden animate-spin rounded-full border-2 border-t-transparent border-white h-5 w-5 ml-3"></div>
+                </button>
+            </form>
+
+            {% if video_info %}
+            <div class="mt-10 animate-fade">
+                <div class="relative rounded-3xl overflow-hidden border border-white/10 bg-black shadow-2xl">
+                    <img src="{{ video_info.thumb }}" class="w-full h-64 md:h-[400px] object-cover opacity-60">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex flex-col justify-end p-6 md:p-10">
+                        <span class="text-blue-400 font-bold text-xs uppercase mb-1">{{ video_info.platform }}</span>
+                        <h3 class="text-lg md:text-2xl font-bold text-white mb-6 line-clamp-2 leading-tight">{{ video_info.title }}</h3>
+                        <a href="{{ video_info.url }}" download="video.mp4" target="_blank"
+                            class="w-full md:w-max bg-white text-black font-black py-4 px-12 rounded-xl hover:bg-blue-600 hover:text-white transition-all text-center uppercase tracking-wider shadow-lg">
+                            Kaydet
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if history %}
+        <div class="mt-16 w-full max-w-3xl animate-fade" style="animation-delay: 0.2s;">
+            <p class="text-center text-[10px] font-bold text-gray-500 uppercase tracking-[0.4em] mb-6">Son İndirmeler</p>
+            <div class="grid grid-cols-4 md:grid-cols-8 gap-3">
+                {% for item in history %}
+                <a href="{{ item.url }}" target="_blank" class="block aspect-square rounded-xl overflow-hidden border border-white/5 opacity-40 hover:opacity-100 transition-all">
+                    <img src="{{ item.thumb }}" class="w-full h-full object-cover">
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+    </main>
+
+    <footer class="p-8 text-center border-t border-white/5 mt-10">
+        <p class="text-gray-600 text-[10px] font-bold tracking-widest uppercase">&copy; 2026 HEMENİNDİR.IO</p>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const body = document.getElementById('mainBody');
+            const icon = document.getElementById('themeIcon');
+            if(body.classList.contains('dark-mode')) {
+                body.classList.replace('dark-mode', 'light-mode');
+                icon.innerText = '🌙';
+            } else {
+                body.classList.replace('light-mode', 'dark-mode');
+                icon.innerText = '🌓';
+            }
+        }
+
+        document.getElementById('downloadForm').onsubmit = function() {
+            document.getElementById('btnText').innerText = "Hazırlanıyor...";
+            document.getElementById('loaderIcon').classList.remove('hidden');
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').style.opacity = "0.7";
+        };
+    </script>
+</body>
+</html>

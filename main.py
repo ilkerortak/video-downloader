@@ -5,39 +5,36 @@ import os
 
 app = Flask(__name__)
 
-# TIKTOK İÇİN ÖZEL API (403 ENGELİ YOK)
+# 1. TIKTOK KÖPRÜSÜ (En stabili)
 def get_tiktok_data(url):
     try:
-        api_url = f"https://www.tikwm.com/api/?url={url}"
-        res = requests.get(api_url, timeout=10).json()
+        res = requests.get(f"https://www.tikwm.com/api/?url={url}", timeout=10).json()
         if res.get('code') == 0:
-            data = res['data']
-            return {'url': data['play'], 'title': data.get('title', 'TikTok'), 'thumb': data.get('cover'), 'platform': 'TikTok'}
+            d = res['data']
+            return {'url': d['play'], 'title': d.get('title', 'TikTok'), 'thumb': d.get('cover'), 'platform': 'TikTok'}
     except: return None
 
-# INSTAGRAM VE YOUTUBE İÇİN DIŞ KAYNAKLI API (SUNUCU BANINI AŞAR)
-def get_external_api_data(url):
-    # Bu API, Instagram ve YouTube için senin sunucun yerine videoyu çeker
-    # Not: Bu tür servisler zaman zaman değişebilir, en stabili budur.
+# 2. INSTAGRAM KÖPRÜSÜ (Özel Instagram API'si)
+def get_instagram_data(url):
     try:
-        # Alternatif bir downloader API'si kullanıyoruz
+        # Instagram engellerini aşmak için kullanılan alternatif bir servis
         api_url = f"https://api.vkrdownloader.com/server?vkr={url}"
-        res = requests.get(api_url, timeout=15).json()
-        
-        # API başarılı dönerse veriyi işle
+        res = requests.get(api_url, timeout=12).json()
         if res.get('data'):
-            video_data = res['data']
-            # En yüksek kaliteli MP4 linkini bul
-            download_url = video_data['url']
-            return {
-                'url': download_url,
-                'title': video_data.get('title', 'Sosyal Medya Videosu'),
-                'thumb': video_data.get('thumbnail', ''),
-                'platform': 'Sosyal Medya'
-            }
-    except Exception as e:
-        print(f"API Hatası: {e}")
-    return None
+            d = res['data']
+            return {'url': d['url'], 'title': 'Instagram Videosu', 'thumb': d.get('thumbnail', ''), 'platform': 'Instagram'}
+    except: return None
+
+# 3. YOUTUBE KÖPRÜSÜ (Cobalt/Vail benzeri açık kaynaklı motorlar)
+def get_youtube_data(url):
+    try:
+        # YouTube için sunucunu değil, bu köprüyü kullanıyoruz
+        # Eğer bu API çalışmazsa 'y2mate' benzeri bir yapıya geçeceğiz
+        api_url = f"https://api.boxentriq.com/social/video?url={url}"
+        res = requests.get(api_url, timeout=12).json()
+        if res.get('url'):
+            return {'url': res['url'], 'title': res.get('title', 'YouTube Video'), 'thumb': res.get('thumbnail', ''), 'platform': 'YouTube'}
+    except: return None
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -45,30 +42,36 @@ def index():
     error_message = None
     if request.method == 'POST':
         url = request.form.get('url')
-        if url:
-            # TikTok için kendi özel köprüsü
+        try:
             if "tiktok.com" in url:
                 video_info = get_tiktok_data(url)
-            # Instagram, YouTube, Facebook vb. için dış API
+            elif "instagram.com" in url:
+                video_info = get_instagram_data(url)
+            elif "youtube.com" in url or "youtu.be" in url:
+                video_info = get_youtube_data(url)
             else:
-                video_info = get_external_api_data(url)
+                # Diğerleri için Instagram köprüsünü dene (geneldir)
+                video_info = get_instagram_data(url)
             
             if not video_info:
-                error_message = "Video çekilemedi. Platform şu an erişimi kısıtlıyor olabilir."
-    
+                error_message = "Platform erişimi geçici olarak kısıtladı. Lütfen 1 dakika sonra tekrar deneyin."
+        except:
+            error_message = "Beklenmedik bir hata oluştu. Linki kontrol edin."
+            
     return render_template('index.html', video_info=video_info, error_message=error_message)
 
 @app.route('/proxy_download')
 def proxy_download():
     video_url = request.args.get('url')
-    video_title = request.args.get('title', 'hemenindir_video')
-    if not video_url: return "URL eksik", 400
+    video_title = request.args.get('title', 'video')
     try:
-        # İndirmeyi zorla
-        r = requests.get(video_url, stream=True, timeout=30)
-        return Response(r.iter_content(chunk_size=1024*1024), mimetype="video/mp4",
+        # İndirmeyi zorlamak için doğrudan yönlendirme yapıyoruz
+        # Eğer 403 alırsan 'requests.get' ile stream etmeye geri döneriz
+        return Response(requests.get(video_url, stream=True).iter_content(chunk_size=1024*1024),
+                        mimetype="video/mp4",
                         headers={"Content-Disposition": f"attachment; filename={urllib.parse.quote(video_title)}.mp4"})
-    except: return "İndirme başlatılamadı.", 500
+    except:
+        return "İndirme şu an yapılamıyor.", 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 8080)))

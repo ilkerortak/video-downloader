@@ -3,120 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hemenİndir.io | Premium V2.0</title>
+    <title>Hemenİndir.io | Profesyonel Medya İndirici</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --p-color: #00d2ff; --s-color: #3a7bd5; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020406; color: #fff; overflow-x: hidden; }
-        
-        /* Neon Background */
-        .neon-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 50%, #101827 0%, #020406 100%); }
-        .neon-sphere { position: absolute; width: 400px; height: 400px; background: var(--s-color); filter: blur(150px); opacity: 0.15; border-radius: 50%; animation: float 10s infinite alternate; }
-
-        @keyframes float { from { transform: translate(-10%, -10%); } to { transform: translate(10%, 10%); } }
-
-        .rgb-glow { background: linear-gradient(90deg, #00d2ff, #3a7bd5, #00d2ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
-        .rgb-btn { background: linear-gradient(90deg, #00d2ff, #3a7bd5, #00d2ff); background-size: 200% auto; animation: shine 3s linear infinite; transition: 0.4s; }
+        :root { --rgb-gradient: linear-gradient(90deg, #2f81f7, #00d2ff, #2f81f7); }
+        body { font-family: 'Outfit', sans-serif; background-color: #05070a; color: #ffffff; }
+        .rgb-text { background: var(--rgb-gradient); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
+        .rgb-bg { background: var(--rgb-gradient); background-size: 200% auto; animation: shine 3s linear infinite; }
+        .rgb-border:focus-within { border-image: var(--rgb-gradient) 1; box-shadow: 0 0 15px rgba(47, 129, 247, 0.4); }
         @keyframes shine { to { background-position: 200% center; } }
-
-        .premium-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px); border-radius: 2.5rem; }
-        .premium-input { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1.2rem; transition: 0.3s; }
-        .premium-input:focus-within { border-color: var(--p-color); box-shadow: 0 0 20px rgba(0, 210, 255, 0.2); }
-
-        .loading-bar-inner { background: linear-gradient(90deg, #00d2ff, #3a7bd5); box-shadow: 0 0 15px #00d2ff; }
+        .glass-panel { background: rgba(13, 17, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6">
-    <div class="neon-bg"><div class="neon-sphere"></div></div>
+<body class="min-h-screen flex flex-col items-center justify-center px-4 text-center">
 
-    <nav class="absolute top-10 flex items-center gap-3">
-        <div class="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-bold tracking-[0.2em] text-blue-400">PREMIUM V2.0</div>
-    </nav>
+    <div class="absolute top-8 left-8 flex items-center gap-2">
+        <div class="w-9 h-9 rounded-lg rgb-bg flex items-center justify-center font-bold text-white text-sm">Hİ</div>
+        <span class="text-lg font-bold tracking-tight uppercase">HEMENİNDİR<span class="rgb-text">.io</span></span>
+    </div>
 
-    <main class="w-full max-w-3xl">
-        <div id="main-content">
-            <h1 class="text-6xl md:text-8xl font-extrabold text-center mb-4 tracking-tighter">
-                Hemen<span class="rgb-glow italic">İndir</span>
-            </h1>
-            <p class="text-center text-gray-400 mb-12 font-medium tracking-wide">YÜKSEK KALİTE MEDYA DÖNÜŞTÜRÜCÜ</p>
+    <main class="w-full max-w-4xl">
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-4 tracking-tight">
+            Her Şeyi <span class="rgb-text">Anında</span> İndir.
+        </h1>
+        <p class="text-gray-400 text-lg mb-12 font-light">
+            TikTok, Instagram ve YouTube linkini yapıştır, saniyeler içinde cihazına gelsin.
+        </p>
 
-            <div class="premium-card p-2 md:p-3 shadow-2xl">
-                <form method="POST" action="/" onsubmit="startV2()" class="flex flex-col md:flex-row gap-2">
-                    <input type="hidden" name="action" value="info">
-                    <div class="premium-input flex-grow flex items-center px-6 py-5">
-                        <i class="fa-solid fa-bolt-lightning text-blue-400 mr-4"></i>
-                        <input type="url" name="url" placeholder="URL Adresini buraya uçur..." required class="bg-transparent w-full outline-none text-white font-bold">
-                    </div>
-                    <button type="submit" class="rgb-btn px-12 py-5 rounded-xl font-black text-white uppercase tracking-widest hover:scale-105 active:scale-95 shadow-xl shadow-blue-500/20">
-                        ANALİZ ET
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        {% if preview %}
-        <div class="mt-8 premium-card p-6 border-t-2 border-blue-500/30 animate-in fade-in zoom-in duration-500">
-            <div class="flex flex-col md:flex-row gap-6 items-center">
-                <img src="{{ preview.thumb }}" class="w-full md:w-48 h-32 object-cover rounded-2xl shadow-2xl">
-                <div class="flex-grow text-center md:text-left">
-                    <h3 class="text-xl font-bold mb-4 italic truncate max-w-sm">{{ preview.title }}</h3>
-                    <div class="flex gap-3">
-                        <form method="POST" onsubmit="startV2()" class="w-full">
-                            <input type="hidden" name="url" value="{{ preview.url }}">
-                            <input type="hidden" name="action" value="video">
-                            <button class="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
-                                <i class="fa-solid fa-video"></i> MP4
-                            </button>
-                        </form>
-                        <form method="POST" onsubmit="startV2()" class="w-full">
-                            <input type="hidden" name="url" value="{{ preview.url }}">
-                            <input type="hidden" name="action" value="mp3">
-                            <button class="w-full rgb-btn py-3 rounded-xl font-bold flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-music"></i> MP3
-                            </button>
-                        </form>
-                    </div>
+        <div class="glass-panel w-full max-w-2xl mx-auto rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
+            <form method="POST" action="/" class="flex flex-col md:flex-row gap-3">
+                <div class="bg-[#161b22] border border-[#30363d] rounded-xl flex-grow flex items-center px-4 py-3 rgb-border">
+                    <i class="fa-solid fa-link text-gray-400 mr-3"></i>
+                    <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required class="bg-transparent w-full outline-none text-white">
                 </div>
-            </div>
+                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white rounded-xl hover:scale-105 transition-all">
+                    İndir
+                </button>
+            </form>
+            
+            {% if error %}
+            <p class="mt-4 text-red-500 text-sm font-semibold">{{ error }}</p>
+            {% endif %}
         </div>
-        {% endif %}
-
-        {% if error %}
-        <div class="mt-6 text-red-400 text-center font-bold bg-red-500/10 py-3 rounded-xl border border-red-500/20">
-            <i class="fa-solid fa-triangle-exclamation mr-2"></i> {{ error }}
-        </div>
-        {% endif %}
-
-        <div id="v2-loader" class="hidden mt-16 text-center">
-            <div class="w-full max-w-sm mx-auto h-1.5 bg-white/5 rounded-full overflow-hidden">
-                <div id="v2-progress" class="loading-bar-inner h-full w-0 transition-all duration-300"></div>
-            </div>
-            <p class="mt-6 text-xs font-black tracking-[0.5em] text-blue-400 animate-pulse uppercase">Veri Akışı Sağlanıyor</p>
+        
+        <div class="mt-8 text-xs text-gray-500 italic">
+            Not: Büyük videolarda indirme butonuna bastıktan sonra işlemin bitmesi 5-10 saniye sürebilir.
         </div>
     </main>
 
-    <footer class="mt-24 text-center">
-        <p class="text-[10px] font-black tracking-[0.6em] text-gray-600">BY <span class="rgb-glow">İLKER ORTAK</span> — 2026</p>
+    <footer class="mt-20 text-gray-600 text-[10px] font-bold uppercase tracking-[0.3em]">
+        &copy; 2026 Hemenİndir.io — <span class="rgb-text">İlker Ortak</span>
     </footer>
-
-    <script>
-        function startV2() {
-            document.getElementById('v2-loader').classList.remove('hidden');
-            let w = 0;
-            const iv = setInterval(() => {
-                w += (98 - w) * 0.05;
-                document.getElementById('v2-progress').style.width = w + '%';
-                if(w > 97) clearInterval(iv);
-            }, 500);
-            window.onfocus = () => {
-                setTimeout(() => {
-                    document.getElementById('v2-loader').classList.add('hidden');
-                    document.getElementById('v2-progress').style.width = '0%';
-                }, 1000);
-            };
-        }
-    </script>
 </body>
 </html>

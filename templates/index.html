@@ -15,46 +15,86 @@
         .rgb-border:focus-within { border-image: var(--rgb-gradient) 1; box-shadow: 0 0 15px rgba(47, 129, 247, 0.4); }
         @keyframes shine { to { background-position: 200% center; } }
         .glass-panel { background: rgba(13, 17, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); }
+        .input-area { background: #161b22; border: 1px solid #30363d; border-radius: 0.75rem; transition: 0.3s; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center px-4 text-center">
+<body class="min-h-screen flex flex-col items-center justify-center px-4">
 
     <div class="absolute top-8 left-8 flex items-center gap-2">
-        <div class="w-9 h-9 rounded-lg rgb-bg flex items-center justify-center font-bold text-white text-sm">Hİ</div>
+        <div class="w-9 h-9 rounded-lg rgb-bg flex items-center justify-center font-bold text-white text-sm shadow-lg shadow-blue-500/20">Hİ</div>
         <span class="text-lg font-bold tracking-tight uppercase">HEMENİNDİR<span class="rgb-text">.io</span></span>
     </div>
 
-    <main class="w-full max-w-4xl">
-        <h1 class="text-5xl md:text-7xl font-extrabold mb-4 tracking-tight">
+    <main class="w-full max-w-4xl flex flex-col items-center text-center">
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-4 tracking-tight leading-tight">
             Her Şeyi <span class="rgb-text">Anında</span> İndir.
         </h1>
-        <p class="text-gray-400 text-lg mb-12 font-light">
-            TikTok, Instagram ve YouTube linkini yapıştır, saniyeler içinde cihazına gelsin.
+        <p class="text-gray-400 text-lg mb-12 max-w-2xl font-light">
+            TikTok, Instagram ve YouTube bağlantısını yapıştır. En yüksek kalitede, filigransız saniyeler içinde cihazına kaydet.
         </p>
 
-        <div class="glass-panel w-full max-w-2xl mx-auto rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
-            <form method="POST" action="/" class="flex flex-col md:flex-row gap-3">
-                <div class="bg-[#161b22] border border-[#30363d] rounded-xl flex-grow flex items-center px-4 py-3 rgb-border">
-                    <i class="fa-solid fa-link text-gray-400 mr-3"></i>
-                    <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required class="bg-transparent w-full outline-none text-white">
+        <div id="input-container" class="glass-panel w-full max-w-2xl rounded-[2.5rem] p-8 md:p-10 shadow-2xl border border-white/5">
+            <form method="POST" action="/" id="download-form" class="flex flex-col md:flex-row gap-3">
+                <div class="input-area flex-grow flex items-center px-5 py-4 rgb-border">
+                    <i class="fa-solid fa-link text-gray-500 mr-3"></i>
+                    <input type="url" name="url" placeholder="Bağlantıyı buraya yapıştır..." required 
+                           class="bg-transparent w-full outline-none text-white text-base placeholder-gray-600">
                 </div>
-                <button type="submit" class="rgb-bg px-10 py-3 font-bold text-white rounded-xl hover:scale-105 transition-all">
-                    İndir
+                <button type="submit" class="rgb-bg px-10 py-4 font-bold text-white rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-blue-500/25">
+                    <i class="fa-solid fa-bolt mr-2"></i> İNDİR
                 </button>
             </form>
             
             {% if error %}
-            <p class="mt-4 text-red-500 text-sm font-semibold">{{ error }}</p>
+            <div class="mt-4 flex items-center justify-center gap-2 text-red-400 text-sm font-medium">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                {{ error }}
+            </div>
             {% endif %}
         </div>
-        
-        <div class="mt-8 text-xs text-gray-500 italic">
-            Not: Büyük videolarda indirme butonuna bastıktan sonra işlemin bitmesi 5-10 saniye sürebilir.
+
+        <div id="loading-container" class="hidden w-full max-w-xl mt-12">
+            <div class="flex flex-col items-center">
+                <div class="w-full bg-gray-900 rounded-full h-3 mb-6 overflow-hidden border border-white/5 p-[2px]">
+                    <div id="progress-bar" class="rgb-bg h-full rounded-full transition-all duration-700" style="width: 5%"></div>
+                </div>
+                <h3 class="text-xl font-bold rgb-text animate-pulse italic">MEDYA İŞLENİYOR...</h3>
+                <p class="text-gray-500 text-sm mt-3 font-light">Videonun boyutuna göre işlem biraz zaman alabilir, lütfen sayfayı kapatmayın.</p>
+            </div>
         </div>
     </main>
 
-    <footer class="mt-20 text-gray-600 text-[10px] font-bold uppercase tracking-[0.3em]">
-        &copy; 2026 Hemenİndir.io — <span class="rgb-text">İlker Ortak</span>
+    <footer class="mt-20 flex flex-col items-center gap-4">
+        <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-gray-700 to-transparent"></div>
+        <p class="text-gray-600 text-[10px] font-bold uppercase tracking-[0.4em]">
+            &copy; 2026 Hemenİndir.io — <span class="rgb-text">İlker Ortak</span>
+        </p>
     </footer>
+
+    <script>
+        const form = document.getElementById('download-form');
+        const inputContainer = document.getElementById('input-container');
+        const loadingContainer = document.getElementById('loading-container');
+        const progressBar = document.getElementById('progress-bar');
+
+        form.onsubmit = function() {
+            // Görünümü değiştir
+            inputContainer.classList.add('hidden');
+            loadingContainer.classList.remove('hidden');
+
+            // Akıllı Loading Bar Simülasyonu
+            let width = 5;
+            const interval = setInterval(function() {
+                if (width >= 96) {
+                    clearInterval(interval);
+                } else {
+                    // Önce hızlı, sona doğru yavaşlayan gerçekçi bir ilerleme
+                    let step = (96 - width) * 0.08;
+                    width += step;
+                    progressBar.style.width = width + '%';
+                }
+            }, 600);
+        };
+    </script>
 </body>
 </html>
